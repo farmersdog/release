@@ -4,6 +4,9 @@ inputs:
   tag:
     description: 'Github tag'
     required: true
+  prerelease:
+    description: 'Is this a prerelease?'
+    default: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
