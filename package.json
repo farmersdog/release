@@ -1,0 +1,42 @@
+{
+  "name": "release",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:farmersdog/release.git",
+  "author": "Rae Farine <rfarine1027@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "ncc build index.js --license licenses.txt",
+    "lint": "eslint *.js",
+    "lint:watch": "esw -w --color *.js",
+    "pretty": "pretty-quick",
+    "tdd": "jest --watchAll",
+    "test": "jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged && yarn build"
+    }
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@vercel/ncc": "^0.24.1",
+    "babel-jest": "^26.3.0",
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-watch": "^7.0.0",
+    "husky": "^4.3.0",
+    "jest": "^26.4.2",
+    "prettier": "^2.1.2",
+    "pretty-quick": "^3.0.2"
+  }
+}
