@@ -16,8 +16,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged",
-      "pre-push": "yarn build && git commit --amend --no-edit"
+      "pre-commit": "pretty-quick --staged && yarn build"
     }
   },
   "dependencies": {
