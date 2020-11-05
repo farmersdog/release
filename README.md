@@ -6,9 +6,9 @@ prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat
 
 ## Inputs
 
-### `tag`
+### `previousTag`
 
-**Required** github tag
+Github tag of latest release (if prerelease)
 
 ### `prerelease`
 
@@ -30,8 +30,9 @@ Run `yarn lint:watch` to watch for ESLint errors/warnings.
 
 ```
 on:
-  pull_request:
-    types: [opened]
+  push:
+    tags:
+      - '*'
 ```
 
 ```

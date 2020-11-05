@@ -1,17 +1,17 @@
 const core = require('@actions/core');
-// const github = require('@actions/github');
+const github = require('@actions/github');
 
 export async function run() {
   try {
-    const tagRegex = /^v\d{2}\.\d+\.\d+$/;
-    const tag = core.getInput('tag');
+    const {
+      payload: { ref },
+    } = github.context;
+    const tagRegex = /^(refs)\/(tags)\/v\d{2}\.\d+\.\d+$/;
+    const previousTag = core.getInput('previousTag');
     const prerelease = core.getInput('prerelease');
+    const validTag = ref.match(tagRegex);
 
-    if (!tag) {
-      return core.setFailed('Input tag is required.');
-    }
-
-    if (!tagRegex.test(tag)) {
+    if (!validTag) {
       return core.setFailed('Tag must follow format rules: v##.##.##');
     }
 
@@ -19,16 +19,26 @@ export async function run() {
     // Create prerelease
     // Note on bools: https://github.com/actions/toolkit/issues/361
     if (prerelease === 'true') {
-      core.info(`Tag ${tag}: Creating a prerelease...`);
+      if (!previousTag) {
+        return core.setFailed(
+          'Must provide a previousTag to create a prerelease'
+        );
+      }
+
+      core.info(`Tag ${ref}: Creating a prerelease...`);
 
       // Fetch git commits in this release
       // Get a list of story IDs from commits
       // Gather stories (grouped by story_type)
       // Gather PRs from stories (title)
       // changelogEntries = { [story_type] : { [chId]: 'PR Title', prUrl: '' }, ... };
+      // Create a github release (type: prerelease) w/ changelog attached
     }
 
     // If already a prerelease, move to release state
+    if (prerelease === 'false') {
+      console.log('hello');
+    }
 
     return core.setOutput('hi');
   } catch (error) {

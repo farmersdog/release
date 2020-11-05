@@ -30,9 +30,15 @@ async function run() {
 
     // Create release notes for prerelease
     // Create prerelease
-    // Note: https://github.com/actions/toolkit/issues/361
+    // Note on bools: https://github.com/actions/toolkit/issues/361
     if (prerelease === 'true') {
       core.info(`Tag ${tag}: Creating a prerelease...`);
+
+      // Fetch git commits in this release
+      // Get a list of story IDs from commits
+      // Gather stories (grouped by story_type)
+      // Gather PRs from stories (title)
+      // changelogEntries = { [story_type] : { [chId]: 'PR Title', prUrl: '' }, ... };
     }
 
     // If already a prerelease, move to release state
