@@ -10,6 +10,10 @@ prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat
 
 **Required** github tag
 
+### `prerelease`
+
+**Default** true
+
 ## Outputs
 
 ### `releaseNotes`
@@ -34,4 +38,5 @@ on:
 uses: actions/release@v1
 with:
   tag: "v1.0.0"
+  prerelease: false # default is true
 ```
