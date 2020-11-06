@@ -16,13 +16,21 @@ const github = __webpack_require__(438);
 
 async function run() {
   try {
+    const previousTag = core.getInput('previousTag');
+    const prerelease = core.getInput('prerelease');
+    const ghToken = core.getInput('ghToken');
+    const octokit = github.getOctokit(ghToken);
     const {
-      payload: { ref },
+      payload: {
+        ref,
+        repository: {
+          name: repo,
+          owner: { login },
+        },
+      },
     } = github.context;
     const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
     const validTag = ref.match(tagRegex);
-    const previousTag = core.getInput('previousTag');
-    const prerelease = core.getInput('prerelease');
 
     console.log('what is github.context here', github.context);
 
@@ -43,11 +51,17 @@ async function run() {
         );
       }
 
-      console.log('Previous tag is...', previousTag);
-
       core.info(`Tag ${tag}: Creating a prerelease...`);
 
       // Get list of commits
+      const commits = await octokit.repos.compareCommits({
+        owner: login,
+        repo,
+        base: previousTag,
+        head: tag,
+      });
+
+      console.dir('commits are...', commits);
       // Get a list of story IDs from commits
       // Gather stories (grouped by story_type)
       // Gather PRs from stories (title)

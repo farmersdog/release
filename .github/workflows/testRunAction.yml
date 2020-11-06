@@ -18,4 +18,5 @@ jobs:
       - name: Test farmersdog/release action
         uses: './action'
         with:
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
           previousTag: ${{ steps.latestTag.outputs.tag }}

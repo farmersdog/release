@@ -1,6 +1,9 @@
 name: 'Release'
 description: 'Create a prerelease/release'
 inputs:
+  ghToken:
+    description: 'Github token'
+    required: true
   tag:
     description: 'Github tag'
     required: true
