@@ -17,7 +17,7 @@ const github = __webpack_require__(438);
 async function run() {
   try {
     const {
-      payload: { commits, ref },
+      payload: { ref },
     } = github.context;
     const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
     const validTag = ref.match(tagRegex);
@@ -43,13 +43,11 @@ async function run() {
         );
       }
 
+      console.log('Previous tag is...', previousTag);
+
       core.info(`Tag ${tag}: Creating a prerelease...`);
 
-      if (!commits || commits.length < 1) {
-        return core.setFailed(
-          'There are no commits in the github action payload.'
-        );
-      }
+      // Get list of commits
       // Get a list of story IDs from commits
       // Gather stories (grouped by story_type)
       // Gather PRs from stories (title)

@@ -4,6 +4,8 @@ inputs:
   tag:
     description: 'Github tag'
     required: true
+  previousTag:
+    description: 'The latest tag'
   prerelease:
     description: 'Is this a prerelease?'
     default: true
