@@ -21,12 +21,13 @@ async function run() {
     const ghToken = core.getInput('ghToken');
     const octokit = github.getOctokit(ghToken);
     const {
-      payload: { ref },
+      payload: {
+        ref,
+        repository: { url: repoUrl },
+      },
     } = github.context;
     const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
     const validTag = ref.match(tagRegex);
-
-    console.log('what is github.context here', github.context);
 
     if (!validTag || !validTag.groups.tag) {
       return core.setFailed('Tag must follow format rules: v##.##.##');
@@ -56,7 +57,17 @@ async function run() {
         head: tag,
       });
 
-      console.log('commits are...', commits);
+      const formattedCommits = commits.reduce((acc, commit) => {
+        const { message } = commit;
+        const regex = /(?<chType>\(\w*\))\s(?<prMsg>\w*\W*.+?)\[(?<chId>ch\d+)\]\s\(#(?<prNumber>\d+)\)/gi;
+        const matches = message.match(regex);
+        const chType = (matches && matches.groups.chType) || 'other';
+        const prMsg = (matches && matches.groups.prMsg) || message;
+        const prIdLink =
+          matches &&
+          matches.groups.prId &&
+          `[#${prId}](${repoUrl}/pull/${prId})`;
+      }, {});
       // Get a list of story IDs from commits
       // Gather stories (grouped by story_type)
       // Gather PRs from stories (title)
