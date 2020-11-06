@@ -4,12 +4,14 @@ const github = require('@actions/github');
 export async function run() {
   try {
     const {
-      payload: { ref },
+      payload: { commits, ref },
     } = github.context;
     const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
     const validTag = ref.match(tagRegex);
     const previousTag = core.getInput('previousTag');
     const prerelease = core.getInput('prerelease');
+
+    console.log('what is github.context here', github.context);
 
     if (!validTag || !validTag.groups.tag) {
       return core.setFailed('Tag must follow format rules: v##.##.##');
@@ -28,7 +30,11 @@ export async function run() {
 
       core.info(`Tag ${tag}: Creating a prerelease...`);
 
-      // Fetch git commits in this release
+      if (!commits || commits.length < 1) {
+        return core.setFailed(
+          'There are no commits in the github action payload.'
+        );
+      }
       // Get a list of story IDs from commits
       // Gather stories (grouped by story_type)
       // Gather PRs from stories (title)

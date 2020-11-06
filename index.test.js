@@ -20,7 +20,7 @@ describe('Release', () => {
   describe('run()', () => {
     describe('on prerelease', () => {
       beforeEach(() => {
-        inputs = { prerelease: 'true', previousTag: 'v20.0.0' };
+        inputs = { commits: [], prerelease: 'true', previousTag: 'v20.0.0' };
       });
 
       test("should exit if tag isn't properly formatted", async () => {
