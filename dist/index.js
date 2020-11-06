@@ -30,7 +30,9 @@ async function run() {
       return core.setFailed('Tag must follow format rules: v##.##.##');
     }
 
-    const tag = validTag.groups.tag;
+    const {
+      groups: { tag },
+    } = validTag;
 
     // Create prerelease
     // Note on bools: https://github.com/actions/toolkit/issues/361

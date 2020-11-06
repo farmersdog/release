@@ -1,0 +1,12 @@
+name: On Tag
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test farmersdog/release action
+        uses: './action'
