@@ -39,5 +39,6 @@ on:
 uses: actions/release@v1
 with:
   tag: "v1.0.0"
-  prerelease: false # default is true
+  ## prerelease: false # default is true
+  previousTag: "v0.0.9"
 ```
