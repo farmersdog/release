@@ -35,13 +35,15 @@ export async function run() {
       core.info(`Tag ${tag}: Creating a prerelease...`);
 
       // Get list of commits
-      const { commits } = await octokit.repos.compareCommits({
+      const {
+        data: { commits },
+      } = await octokit.repos.compareCommits({
         ...github.context.repo,
         base: previousTag,
         head: tag,
       });
 
-      console.dir('commits are...', commits);
+      console.log('commits are...', commits);
       // Get a list of story IDs from commits
       // Gather stories (grouped by story_type)
       // Gather PRs from stories (title)
