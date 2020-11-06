@@ -6,16 +6,17 @@ export async function run() {
     const {
       payload: { ref },
     } = github.context;
-    const tagRegex = /^(refs)\/(tags)\/v\d{2}\.\d+\.\d+$/;
+    const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
+    const validTag = ref.match(tagRegex);
     const previousTag = core.getInput('previousTag');
     const prerelease = core.getInput('prerelease');
-    const validTag = ref.match(tagRegex);
 
-    if (!validTag) {
+    if (!validTag || !validTag.groups.tag) {
       return core.setFailed('Tag must follow format rules: v##.##.##');
     }
 
-    // Create release notes for prerelease
+    const tag = validTag.groups.tag;
+
     // Create prerelease
     // Note on bools: https://github.com/actions/toolkit/issues/361
     if (prerelease === 'true') {
@@ -25,7 +26,7 @@ export async function run() {
         );
       }
 
-      core.info(`Tag ${ref}: Creating a prerelease...`);
+      core.info(`Tag ${tag}: Creating a prerelease...`);
 
       // Fetch git commits in this release
       // Get a list of story IDs from commits

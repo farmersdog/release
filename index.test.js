@@ -13,8 +13,8 @@ jest.spyOn(core, 'getInput').mockImplementation((name) => {
   return inputs[name];
 });
 
-jest.spyOn(core, 'info').mockImplementation(jest.fn());
-jest.spyOn(core, 'setFailed').mockImplementation(jest.fn());
+jest.spyOn(core, 'info').mockImplementation((msg) => msg);
+jest.spyOn(core, 'setFailed').mockImplementation((msg) => msg);
 
 describe('Release', () => {
   describe('run()', () => {
@@ -26,7 +26,9 @@ describe('Release', () => {
       test("should exit if tag isn't properly formatted", async () => {
         github.context = { payload: { ref: 'refs/tags/testing' } };
         await run();
-        expect(core.setFailed).toHaveBeenCalledTimes(1);
+        expect(core.setFailed).toHaveBeenCalledWith(
+          'Tag must follow format rules: v##.##.##'
+        );
       });
 
       test('should exit if no previousTag provided', async () => {
@@ -34,13 +36,17 @@ describe('Release', () => {
         inputs.previousTag = null;
 
         await run();
-        expect(core.setFailed).toHaveBeenCalledTimes(1);
+        expect(core.setFailed).toHaveBeenCalledWith(
+          'Must provide a previousTag to create a prerelease'
+        );
       });
 
       test('should call core.info', async () => {
         github.context = { payload: { ref: 'refs/tags/v20.0.0' } };
         await run();
-        expect(core.info).toHaveBeenCalledTimes(1);
+        expect(core.info).toHaveBeenCalledWith(
+          'Tag v20.0.0: Creating a prerelease...'
+        );
       });
     });
   });
