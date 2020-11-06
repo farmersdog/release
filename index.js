@@ -8,13 +8,7 @@ export async function run() {
     const ghToken = core.getInput('ghToken');
     const octokit = github.getOctokit(ghToken);
     const {
-      payload: {
-        ref,
-        repository: {
-          name: repo,
-          owner: { login },
-        },
-      },
+      payload: { ref },
     } = github.context;
     const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
     const validTag = ref.match(tagRegex);
@@ -42,8 +36,7 @@ export async function run() {
 
       // Get list of commits
       const { commits } = await octokit.repos.compareCommits({
-        owner: login,
-        repo,
+        ...github.context.repo,
         base: previousTag,
         head: tag,
       });
