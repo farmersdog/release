@@ -54,7 +54,7 @@ async function run() {
       core.info(`Tag ${tag}: Creating a prerelease...`);
 
       // Get list of commits
-      const commits = await octokit.repos.compareCommits({
+      const { commits } = await octokit.repos.compareCommits({
         owner: login,
         repo,
         base: previousTag,
