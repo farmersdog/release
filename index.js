@@ -1,6 +1,27 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
+export function formatChType(type) {
+  const featureRegex = /(feat+)/;
+  const choreRegex = /(chore)/;
+  const bugRegex = /(bug)/;
+  let formattedType = null;
+
+  if (type.match(featureRegex)) {
+    return 'feature';
+  }
+
+  if (type.match(choreRegex)) {
+    return 'chore';
+  }
+
+  if (type.match(bugRegex)) {
+    return 'bug';
+  }
+
+  return 'other';
+}
+
 export function formatCommits(commits) {
   const {
     payload: {
@@ -13,9 +34,9 @@ export function formatCommits(commits) {
       commit: { message },
       sha: origSha,
     } = com;
-    const regex = /(\()?(?<chType>\w*)?(\)\s)?(?<prMsg>\w*\W*.+?)(\[)?(?<chId>ch\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
+    const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(?<chId>ch\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
     const matches = message.match(regex);
-    const chType = (matches && matches.groups.chType) || 'other';
+    const chType = matches && formatChType(matches.groups.chType);
     const chId = matches && matches.groups.chId;
     const prMsg = matches && matches.groups.prMsg;
     const prLink =

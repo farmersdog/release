@@ -8,12 +8,34 @@ module.exports =
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "formatChType": () => /* binding */ formatChType,
 /* harmony export */   "formatCommits": () => /* binding */ formatCommits,
 /* harmony export */   "run": () => /* binding */ run,
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ });
 const core = __webpack_require__(186);
 const github = __webpack_require__(438);
+
+function formatChType(type) {
+  const featureRegex = /(feat+)/;
+  const choreRegex = /(chore)/;
+  const bugRegex = /(bug)/;
+  let formattedType = null;
+
+  if (type.match(featureRegex)) {
+    return 'feature';
+  }
+
+  if (type.match(choreRegex)) {
+    return 'chore';
+  }
+
+  if (type.match(bugRegex)) {
+    return 'bug';
+  }
+
+  return 'other';
+}
 
 function formatCommits(commits) {
   const {
@@ -27,9 +49,9 @@ function formatCommits(commits) {
       commit: { message },
       sha: origSha,
     } = com;
-    const regex = /(\()?(?<chType>\w*)?(\)\s)?(?<prMsg>\w*\W*.+?)(\[)?(?<chId>ch\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
+    const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(?<chId>ch\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
     const matches = message.match(regex);
-    const chType = (matches && matches.groups.chType) || 'other';
+    const chType = matches && formatChType(matches.groups.chType);
     const chId = matches && matches.groups.chId;
     const prMsg = matches && matches.groups.prMsg;
     const prLink =

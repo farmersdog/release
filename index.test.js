@@ -25,25 +25,36 @@ github.context.payload = { repository: { url: 'http://example.com/repo' } };
 describe('Release', () => {
   describe('formatCommits(commits)', () => {
     describe('when commit messages contain all regex groups', () => {
-      const commits = [
-        {
-          commit: { message: '(feat) I am a feature [ch123] (#123)' },
-          sha: sha1(''),
-        },
-        {
-          commit: { message: '(chore) I am a chore [ch345] (#345)' },
-          sha: sha1(''),
-        },
-        {
-          commit: { message: '(bug) I am a bug fix [ch678] (#678)' },
-          sha: sha1(''),
-        },
-      ];
+      const commit1 = {
+        commit: { message: '(feat) I am a feature [ch123] (#123)' },
+        sha: sha1(''),
+      };
+      const commit2 = {
+        commit: { message: '(feature) I am a feature [ch000] (#000)' },
+        sha: sha1(''),
+      };
+      const commit3 = {
+        commit: { message: '(chore) I am a chore [ch345] (#345)' },
+        sha: sha1(''),
+      };
+      const commit4 = {
+        commit: { message: '(bug) I am a bug fix [ch678] (#678)' },
+        sha: sha1(''),
+      };
+
+      const commits = [commit1, commit2, commit3, commit4];
 
       const formattedCommits = formatCommits(commits);
 
       const expectedCommits = {
-        feat: [],
+        feature: [
+          {
+            chId: 'ch123',
+            prMsg: 'I am a feature',
+            prLink: `[#123](${github.context.payload.repository.url}/pull/123)`,
+            sha: commit1.sha.substring(0, 6),
+          },
+        ],
         chore: [],
         bug: [],
       };
