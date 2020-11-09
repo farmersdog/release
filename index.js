@@ -46,19 +46,23 @@ export async function run() {
 
       const formattedCommits = commits.reduce((acc, commit) => {
         const { message } = commit;
-        const regex = /(?<chType>\(\w*\))\s(?<prMsg>\w*\W*.+?)\[(?<chId>ch\d+)\]\s\(#(?<prNumber>\d+)\)/gi;
+        const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\[)?(?<chId>ch\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
         const matches = message.match(regex);
         const chType = (matches && matches.groups.chType) || 'other';
-        const prMsg = (matches && matches.groups.prMsg) || message;
-        const prIdLink =
+        const chId = matches && matches.groups.chId;
+        const prMsg = matches && matches.groups.prMsg;
+        const prLink =
           matches &&
-          matches.groups.prId &&
-          `[#${prId}](${repoUrl}/pull/${prId})`;
+          matches.groups.prNumber &&
+          `[#${matches.groups.prNumber}](${repoUrl}/pull/${matches.groups.prNumber})`;
+
+        const formattedCommit = { chId, prMsg, prLink };
+
+        return Object.assign(acc, {
+          [chType]: [...acc[chType], formattedCommit],
+        });
       }, {});
-      // Get a list of story IDs from commits
-      // Gather stories (grouped by story_type)
-      // Gather PRs from stories (title)
-      // changelogEntries = { [story_type] : { [chId]: 'PR Title', prUrl: '' }, ... };
+
       // Create a github release (type: prerelease) w/ changelog attached
     }
 
