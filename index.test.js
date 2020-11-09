@@ -54,9 +54,29 @@ describe('Release', () => {
             prLink: `[#123](${github.context.payload.repository.url}/pull/123)`,
             sha: commit1.sha.substring(0, 6),
           },
+          {
+            chId: 'ch000',
+            prMsg: 'I am a feature',
+            prLink: `[#000](${github.context.payload.repository.url}/pull/000)`,
+            sha: commit2.sha.substring(0, 6),
+          },
         ],
-        chore: [],
-        bug: [],
+        chore: [
+          {
+            chId: 'ch345',
+            prMsg: 'I am a chore',
+            prLink: `[#345](${github.context.payload.repository.url}/pull/345)`,
+            sha: commit3.sha.substring(0, 6),
+          },
+        ],
+        bug: [
+          {
+            chId: 'ch678',
+            prMsg: 'I am a bug fix',
+            prLink: `[#678](${github.context.payload.repository.url}/pull/678)`,
+            sha: commit3.sha.substring(0, 6),
+          },
+        ],
       };
 
       expect(formattedCommits).toEqual(expectedCommits);

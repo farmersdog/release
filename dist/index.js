@@ -20,7 +20,6 @@ function formatChType(type) {
   const featureRegex = /(feat+)/;
   const choreRegex = /(chore)/;
   const bugRegex = /(bug)/;
-  let formattedType = null;
 
   if (type.match(featureRegex)) {
     return 'feature';
