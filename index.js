@@ -6,6 +6,10 @@ export function formatChType(type) {
   const choreRegex = /(chore)/;
   const bugRegex = /(bug)/;
 
+  if (!type) {
+    return 'other';
+  }
+
   if (type.match(featureRegex)) {
     return 'feature';
   }
@@ -21,7 +25,7 @@ export function formatChType(type) {
   return 'other';
 }
 
-export function formatCommits(commits) {
+export function formatCommits(commits, chStoryUrl) {
   const {
     payload: {
       repository: { url: repoUrl },
@@ -33,18 +37,24 @@ export function formatCommits(commits) {
       commit: { message },
       sha: origSha,
     } = com;
-    const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(?<chId>ch\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
+    const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(ch)?(?<chId>\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
     const matches = message.match(regex);
-    const chType = matches && formatChType(matches.groups.chType);
-    const chId = matches && matches.groups.chId;
+    const chType = formatChType(matches.groups.chType);
     const prMsg = matches && matches.groups.prMsg;
     const prLink =
-      matches &&
-      matches.groups.prNumber &&
-      `[#${matches.groups.prNumber}](${repoUrl}/pull/${matches.groups.prNumber})`;
+      (matches &&
+        matches.groups.prNumber &&
+        `[#${matches.groups.prNumber}](${repoUrl}/pull/${matches.groups.prNumber})`) ||
+      null;
+    const chLink =
+      (matches &&
+        matches.groups.chId &&
+        `[ch${matches.groups.chId}](${chStoryUrl}/${matches.groups.chId})`) ||
+      null;
     const sha = origSha.substring(0, 6);
 
-    const formattedCommit = { chId, prMsg, prLink, sha };
+    const formattedCommit = { chLink, prMsg, prLink, sha };
+
     return Object.assign(acc, {
       [chType]: [...((acc[chType] && acc[chType]) || []), formattedCommit],
     });
@@ -56,6 +66,7 @@ export async function run() {
     const previousTag = core.getInput('previousTag');
     const prerelease = core.getInput('prerelease');
     const ghToken = core.getInput('ghToken');
+    const chStoryUrl = core.getInput('chStoryUrl');
     const { ref } = github.context;
     const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
     const validTag = ref.match(tagRegex);
@@ -63,6 +74,14 @@ export async function run() {
     if (!ghToken) {
       return core.setFailed('Must provide ghToken');
     }
+
+    if (!chStoryUrl) {
+      return core.setFailed('Must provide chStoryUrl');
+    }
+
+    // Mask tokens:
+    core.setSecret('ghToken');
+    core.setSecret('chStoryUrl');
 
     if (!validTag || !validTag.groups.tag) {
       return core.setFailed('Tag must follow format rules: v##.##.##');

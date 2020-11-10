@@ -18,4 +18,5 @@ jobs:
         uses: './action'
         with:
           ghToken: ${{ secrets.GITHUB_TOKEN }}
+          chStoryUrl: ${{ secrets.CH_STORY_URL }}
           previousTag: ${{ steps.latestRelease.outputs.tag_name }}

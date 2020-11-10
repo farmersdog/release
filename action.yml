@@ -4,6 +4,9 @@ inputs:
   ghToken:
     description: 'Github token'
     required: true
+  chStoryUrl:
+    description: 'Clubhouse URL (ie. https://app.clubhouse.io/org/story)'
+    required: true
   tag:
     description: 'Github tag'
     required: true
