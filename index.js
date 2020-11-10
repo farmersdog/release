@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const list = require('markdown-list');
 
 export function formatChType(type) {
   const featureRegex = /(feat+)/;
@@ -61,6 +62,28 @@ export function formatCommits(commits, chStoryUrl) {
   }, {});
 }
 
+export function generateChangelog(formattedCommits) {
+  core.info(formattedCommits);
+
+  return Object.keys(formattedCommits).reduce((acc, type) => {
+    const heading = type;
+    const markdownCommits = formattedCommits[type].map(
+      (commit) => `
+      - ${commit.prMsg} ${commit.chLink && commit.chLink} ${
+        commit.prLink && commit.prLink
+      }
+    `
+    );
+    const listOfCommits = list(markdownCommits);
+
+    const log = `${acc}### ${heading}
+    ${listOfCommits}
+    `;
+
+    return log;
+  }, '');
+}
+
 export async function run() {
   try {
     const previousTag = core.getInput('previousTag');
@@ -113,13 +136,14 @@ export async function run() {
       });
 
       const formattedCommits = formatCommits(commits);
-      console.log(formattedCommits);
+      const changelog = generateChangelog(formattedCommits);
+      core.info(changelog);
       // Create a github release (type: prerelease) w/ changelog attached
     }
 
     // If already a prerelease, move to release state
     if (prerelease === 'false') {
-      console.log('hello');
+      core.info('hello');
     }
 
     return core.setOutput('hi');

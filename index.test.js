@@ -1,10 +1,18 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import { formatCommits, run } from '.';
-import { fullCommits, prOnlyCommits } from './testData';
+import { formatCommits, generateChangelog, run } from '.';
+import {
+  chStoryUrl,
+  formattedFullCommits,
+  formattedCommitsAll,
+  formattedPrOnlyCommits,
+  fullChangelog,
+  fullCommits,
+  prOnlyCommits,
+  url,
+} from './testData';
 
 let inputs = {};
-const chStoryUrl = 'https://app.clubhouse.io/org/story';
 
 jest.mock('@actions/core');
 jest.mock('@actions/github', () => ({
@@ -21,7 +29,7 @@ jest.spyOn(core, 'setFailed').mockImplementation((msg) => msg);
 
 github.context.ref = 'refs/tags/v20.0.0';
 github.context.sha = '1234567890123456789012345678901234567890';
-github.context.payload = { repository: { url: 'http://example.com/repo' } };
+github.context.payload = { repository: { url } };
 
 describe('Release', () => {
   describe('formatCommits(commits, chStoryUrl)', () => {
@@ -30,38 +38,7 @@ describe('Release', () => {
 
       const formattedCommits = formatCommits(commits, chStoryUrl);
 
-      const expectedCommits = {
-        feature: [
-          {
-            chLink: `[ch123](${chStoryUrl}/123)`,
-            prMsg: 'I am a feature',
-            prLink: `[#123](${github.context.payload.repository.url}/pull/123)`,
-            sha: fullCommits[0].sha.substring(0, 6),
-          },
-          {
-            chLink: `[ch000](${chStoryUrl}/000)`,
-            prMsg: 'I am a feature',
-            prLink: `[#000](${github.context.payload.repository.url}/pull/000)`,
-            sha: fullCommits[1].sha.substring(0, 6),
-          },
-        ],
-        chore: [
-          {
-            chLink: `[ch345](${chStoryUrl}/345)`,
-            prMsg: 'I am a chore',
-            prLink: `[#345](${github.context.payload.repository.url}/pull/345)`,
-            sha: fullCommits[2].sha.substring(0, 6),
-          },
-        ],
-        bug: [
-          {
-            chLink: `[ch678](${chStoryUrl}/678)`,
-            prMsg: 'I am a bug fix',
-            prLink: `[#678](${github.context.payload.repository.url}/pull/678)`,
-            sha: fullCommits[3].sha.substring(0, 6),
-          },
-        ],
-      };
+      const expectedCommits = formattedFullCommits;
 
       expect(formattedCommits).toEqual(expectedCommits);
     });
@@ -71,79 +48,28 @@ describe('Release', () => {
 
       const formattedCommits = formatCommits(commits, chStoryUrl);
 
-      const expectedCommits = {
-        other: [
-          {
-            chLink: null,
-            prMsg: 'I am another type of task.',
-            prLink: `[#340](${github.context.payload.repository.url}/pull/340)`,
-            sha: prOnlyCommits[0].sha.substring(0, 6),
-          },
-          {
-            chLink: null,
-            prMsg: 'I am another type of task.',
-            prLink: `[#341](${github.context.payload.repository.url}/pull/341)`,
-            sha: prOnlyCommits[1].sha.substring(0, 6),
-          },
-        ],
-      };
+      const expectedCommits = formattedPrOnlyCommits;
 
       expect(formattedCommits).toEqual(expectedCommits);
     });
 
     test('when commit messages are of mixed types', () => {
       const commits = [...fullCommits, ...prOnlyCommits];
-
       const formattedCommits = formatCommits(commits, chStoryUrl);
-
-      const expectedCommits = {
-        feature: [
-          {
-            chLink: `[ch123](${chStoryUrl}/123)`,
-            prMsg: 'I am a feature',
-            prLink: `[#123](${github.context.payload.repository.url}/pull/123)`,
-            sha: fullCommits[0].sha.substring(0, 6),
-          },
-          {
-            chLink: `[ch000](${chStoryUrl}/000)`,
-            prMsg: 'I am a feature',
-            prLink: `[#000](${github.context.payload.repository.url}/pull/000)`,
-            sha: fullCommits[1].sha.substring(0, 6),
-          },
-        ],
-        chore: [
-          {
-            chLink: `[ch345](${chStoryUrl}/345)`,
-            prMsg: 'I am a chore',
-            prLink: `[#345](${github.context.payload.repository.url}/pull/345)`,
-            sha: fullCommits[2].sha.substring(0, 6),
-          },
-        ],
-        bug: [
-          {
-            chLink: `[ch678](${chStoryUrl}/678)`,
-            prMsg: 'I am a bug fix',
-            prLink: `[#678](${github.context.payload.repository.url}/pull/678)`,
-            sha: fullCommits[3].sha.substring(0, 6),
-          },
-        ],
-        other: [
-          {
-            chLink: null,
-            prMsg: 'I am another type of task.',
-            prLink: `[#340](${github.context.payload.repository.url}/pull/340)`,
-            sha: prOnlyCommits[0].sha.substring(0, 6),
-          },
-          {
-            chLink: null,
-            prMsg: 'I am another type of task.',
-            prLink: `[#341](${github.context.payload.repository.url}/pull/341)`,
-            sha: prOnlyCommits[1].sha.substring(0, 6),
-          },
-        ],
-      };
+      const expectedCommits = formattedCommitsAll;
 
       expect(formattedCommits).toEqual(expectedCommits);
+    });
+  });
+
+  describe('generateChangelog(formattedCommits)', () => {
+    test('returns a properly formatted changelog', () => {
+      const commits = [...fullCommits, ...prOnlyCommits];
+      const formattedCommits = formatCommits(commits, chStoryUrl);
+      const changelog = generateChangelog(formattedCommits);
+      const expectedChangelog = fullChangelog;
+
+      expect(changelog).toEqual(expectedChangelog);
     });
   });
 

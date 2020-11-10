@@ -2,7 +2,7 @@ module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 932:
+/***/ 2932:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -10,11 +10,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "formatChType": () => /* binding */ formatChType,
 /* harmony export */   "formatCommits": () => /* binding */ formatCommits,
+/* harmony export */   "generateChangelog": () => /* binding */ generateChangelog,
 /* harmony export */   "run": () => /* binding */ run,
 /* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ });
-const core = __webpack_require__(186);
-const github = __webpack_require__(438);
+const core = __webpack_require__(2186);
+const github = __webpack_require__(5438);
+const list = __webpack_require__(7663);
 
 function formatChType(type) {
   const featureRegex = /(feat+)/;
@@ -76,6 +78,28 @@ function formatCommits(commits, chStoryUrl) {
   }, {});
 }
 
+function generateChangelog(formattedCommits) {
+  core.info(formattedCommits);
+
+  return Object.keys(formattedCommits).reduce((acc, type) => {
+    const heading = type;
+    const markdownCommits = formattedCommits[type].map(
+      (commit) => `
+      - ${commit.prMsg} ${commit.chLink && commit.chLink} ${
+        commit.prLink && commit.prLink
+      }
+    `
+    );
+    const listOfCommits = list(markdownCommits);
+
+    const log = `${acc}### ${heading}
+    ${listOfCommits}
+    `;
+
+    return log;
+  }, '');
+}
+
 async function run() {
   try {
     const previousTag = core.getInput('previousTag');
@@ -128,13 +152,14 @@ async function run() {
       });
 
       const formattedCommits = formatCommits(commits);
-      console.log(formattedCommits);
+      const changelog = generateChangelog(formattedCommits);
+      core.info(changelog);
       // Create a github release (type: prerelease) w/ changelog attached
     }
 
     // If already a prerelease, move to release state
     if (prerelease === 'false') {
-      console.log('hello');
+      core.info('hello');
     }
 
     return core.setOutput('hi');
@@ -150,7 +175,7 @@ run();
 
 /***/ }),
 
-/***/ 351:
+/***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -163,8 +188,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const os = __importStar(__webpack_require__(87));
-const utils_1 = __webpack_require__(278);
+const os = __importStar(__webpack_require__(2087));
+const utils_1 = __webpack_require__(5278);
 /**
  * Commands
  *
@@ -236,7 +261,7 @@ function escapeProperty(s) {
 
 /***/ }),
 
-/***/ 186:
+/***/ 2186:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -258,11 +283,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const command_1 = __webpack_require__(351);
+const command_1 = __webpack_require__(7351);
 const file_command_1 = __webpack_require__(717);
-const utils_1 = __webpack_require__(278);
-const os = __importStar(__webpack_require__(87));
-const path = __importStar(__webpack_require__(622));
+const utils_1 = __webpack_require__(5278);
+const os = __importStar(__webpack_require__(2087));
+const path = __importStar(__webpack_require__(5622));
 /**
  * The code to exit an action
  */
@@ -497,9 +522,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const fs = __importStar(__webpack_require__(747));
-const os = __importStar(__webpack_require__(87));
-const utils_1 = __webpack_require__(278);
+const fs = __importStar(__webpack_require__(5747));
+const os = __importStar(__webpack_require__(2087));
+const utils_1 = __webpack_require__(5278);
 function issueCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
     if (!filePath) {
@@ -517,7 +542,7 @@ exports.issueCommand = issueCommand;
 
 /***/ }),
 
-/***/ 278:
+/***/ 5278:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -543,15 +568,15 @@ exports.toCommandValue = toCommandValue;
 
 /***/ }),
 
-/***/ 53:
+/***/ 4087:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Context = void 0;
-const fs_1 = __webpack_require__(747);
-const os_1 = __webpack_require__(87);
+const fs_1 = __webpack_require__(5747);
+const os_1 = __webpack_require__(2087);
 class Context {
     /**
      * Hydrate the context from the environment
@@ -600,7 +625,7 @@ exports.Context = Context;
 
 /***/ }),
 
-/***/ 438:
+/***/ 5438:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -626,8 +651,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokit = exports.context = void 0;
-const Context = __importStar(__webpack_require__(53));
-const utils_1 = __webpack_require__(30);
+const Context = __importStar(__webpack_require__(4087));
+const utils_1 = __webpack_require__(3030);
 exports.context = new Context.Context();
 /**
  * Returns a hydrated octokit ready to use for GitHub Actions
@@ -643,7 +668,7 @@ exports.getOctokit = getOctokit;
 
 /***/ }),
 
-/***/ 914:
+/***/ 7914:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -669,7 +694,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getApiBaseUrl = exports.getProxyAgent = exports.getAuthString = void 0;
-const httpClient = __importStar(__webpack_require__(925));
+const httpClient = __importStar(__webpack_require__(9925));
 function getAuthString(token, options) {
     if (!token && !options.auth) {
         throw new Error('Parameter token or opts.auth is required');
@@ -693,7 +718,7 @@ exports.getApiBaseUrl = getApiBaseUrl;
 
 /***/ }),
 
-/***/ 30:
+/***/ 3030:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -719,12 +744,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
-const Context = __importStar(__webpack_require__(53));
-const Utils = __importStar(__webpack_require__(914));
+const Context = __importStar(__webpack_require__(4087));
+const Utils = __importStar(__webpack_require__(7914));
 // octokit + plugins
-const core_1 = __webpack_require__(762);
-const plugin_rest_endpoint_methods_1 = __webpack_require__(44);
-const plugin_paginate_rest_1 = __webpack_require__(193);
+const core_1 = __webpack_require__(6762);
+const plugin_rest_endpoint_methods_1 = __webpack_require__(3044);
+const plugin_paginate_rest_1 = __webpack_require__(4193);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
 const defaults = {
@@ -754,15 +779,15 @@ exports.getOctokitOptions = getOctokitOptions;
 
 /***/ }),
 
-/***/ 925:
+/***/ 9925:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const http = __webpack_require__(605);
-const https = __webpack_require__(211);
-const pm = __webpack_require__(443);
+const http = __webpack_require__(8605);
+const https = __webpack_require__(7211);
+const pm = __webpack_require__(6443);
 let tunnel;
 var HttpCodes;
 (function (HttpCodes) {
@@ -1181,7 +1206,7 @@ class HttpClient {
         if (useProxy) {
             // If using proxy, need tunnel
             if (!tunnel) {
-                tunnel = __webpack_require__(294);
+                tunnel = __webpack_require__(4294);
             }
             const agentOptions = {
                 maxSockets: maxSockets,
@@ -1297,7 +1322,7 @@ exports.HttpClient = HttpClient;
 
 /***/ }),
 
-/***/ 443:
+/***/ 6443:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -1419,7 +1444,7 @@ exports.createTokenAuth = createTokenAuth;
 
 /***/ }),
 
-/***/ 762:
+/***/ 6762:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -1427,10 +1452,10 @@ exports.createTokenAuth = createTokenAuth;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var universalUserAgent = __webpack_require__(429);
-var beforeAfterHook = __webpack_require__(682);
-var request = __webpack_require__(234);
-var graphql = __webpack_require__(668);
+var universalUserAgent = __webpack_require__(5030);
+var beforeAfterHook = __webpack_require__(3682);
+var request = __webpack_require__(6234);
+var graphql = __webpack_require__(8467);
 var authToken = __webpack_require__(334);
 
 function _objectWithoutPropertiesLoose(source, excluded) {
@@ -1601,7 +1626,7 @@ exports.Octokit = Octokit;
 
 /***/ }),
 
-/***/ 440:
+/***/ 9440:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -1610,7 +1635,7 @@ exports.Octokit = Octokit;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 var isPlainObject = __webpack_require__(558);
-var universalUserAgent = __webpack_require__(429);
+var universalUserAgent = __webpack_require__(5030);
 
 function lowercaseKeys(object) {
   if (!object) {
@@ -2045,7 +2070,7 @@ exports.isPlainObject = isPlainObject;
 
 /***/ }),
 
-/***/ 668:
+/***/ 8467:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -2053,8 +2078,8 @@ exports.isPlainObject = isPlainObject;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var request = __webpack_require__(234);
-var universalUserAgent = __webpack_require__(429);
+var request = __webpack_require__(6234);
+var universalUserAgent = __webpack_require__(5030);
 
 const VERSION = "4.5.7";
 
@@ -2161,7 +2186,7 @@ exports.withCustomRequest = withCustomRequest;
 
 /***/ }),
 
-/***/ 193:
+/***/ 4193:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -2301,7 +2326,7 @@ exports.paginateRest = paginateRest;
 
 /***/ }),
 
-/***/ 44:
+/***/ 3044:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -3473,8 +3498,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var deprecation = __webpack_require__(481);
-var once = _interopDefault(__webpack_require__(223));
+var deprecation = __webpack_require__(8932);
+var once = _interopDefault(__webpack_require__(1223));
 
 const logOnce = once(deprecation => console.warn(deprecation));
 /**
@@ -3526,7 +3551,7 @@ exports.RequestError = RequestError;
 
 /***/ }),
 
-/***/ 234:
+/***/ 6234:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -3536,9 +3561,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var endpoint = __webpack_require__(440);
-var universalUserAgent = __webpack_require__(429);
-var isPlainObject = __webpack_require__(62);
+var endpoint = __webpack_require__(9440);
+var universalUserAgent = __webpack_require__(5030);
+var isPlainObject = __webpack_require__(9062);
 var nodeFetch = _interopDefault(__webpack_require__(467));
 var requestError = __webpack_require__(537);
 
@@ -3682,7 +3707,7 @@ exports.request = request;
 
 /***/ }),
 
-/***/ 62:
+/***/ 9062:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -3728,12 +3753,12 @@ exports.isPlainObject = isPlainObject;
 
 /***/ }),
 
-/***/ 682:
+/***/ 3682:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var register = __webpack_require__(670)
-var addHook = __webpack_require__(549)
-var removeHook = __webpack_require__(819)
+var register = __webpack_require__(4670)
+var addHook = __webpack_require__(5549)
+var removeHook = __webpack_require__(6819)
 
 // bind with array of arguments: https://stackoverflow.com/a/21792913
 var bind = Function.bind
@@ -3792,7 +3817,7 @@ module.exports.Collection = Hook.Collection
 
 /***/ }),
 
-/***/ 549:
+/***/ 5549:
 /***/ ((module) => {
 
 module.exports = addHook
@@ -3845,7 +3870,7 @@ function addHook (state, kind, name, hook) {
 
 /***/ }),
 
-/***/ 670:
+/***/ 4670:
 /***/ ((module) => {
 
 module.exports = register
@@ -3880,7 +3905,7 @@ function register (state, name, method, options) {
 
 /***/ }),
 
-/***/ 819:
+/***/ 6819:
 /***/ ((module) => {
 
 module.exports = removeHook
@@ -3904,7 +3929,147 @@ function removeHook (state, name, method) {
 
 /***/ }),
 
-/***/ 481:
+/***/ 5811:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * bullets <https://github.com/jonschlinkert/bullets>
+ *
+ * Copyright (c) 2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var isNumber = __webpack_require__(5511);
+var listitem = __webpack_require__(8356);
+
+/**
+ * Expose `bullets`
+ */
+
+module.exports = bullets;
+
+/**
+ * Pass an array of list-item objects to generate a formatted list
+ * or table of contents. Uses [list-item][] for generating the actual
+ * items.
+ *
+ * Note that `lvl` or `level` may be passed as the property name in the
+ * following examples.
+ *
+ * ```js
+ * var list = [
+ *   {text: 'This is item 1', lvl: 0},
+ *   {text: 'This is item 2', lvl: 0},
+ *   {text: 'This is item 3', lvl: 0},
+ *   {text: 'This is sub-item A', lvl: 2},
+ *   {text: 'This is sub-item B', lvl: 2},
+ *   {text: 'This is sub-item C', lvl: 2},
+ * ];
+ * bullets([{text: 'This is a list item', lvl: 0}]);
+ *
+ * // Results in
+ * // '- This is item 1'
+ * // '- This is item 2'
+ * // '- This is item 3'
+ * // '  * This is sub-item A'
+ * // '  * This is sub-item B'
+ * // '  * This is sub-item C'
+ * ```
+ *
+ * @name bullets
+ * @param {Array} `list` Array of item objects with `text` and `lvl` properties
+ * @param {String} `list.text` The text for the list item.
+ * @param {Number} `list.lvl` The level of the list item to be used for indenting the list.
+ * @param {Object} `opts` Options to pass to [list-item][].
+ * @param {Function} `fn` pass a function to modify the bullet for an item as it's generated.
+ * @api public
+ */
+
+function bullets(list, opts, fn) {
+  if (typeof opts === 'function') {
+    fn = opts;
+    opts = {};
+  }
+
+  var len = list.length, i = 0;
+  var li = listitem(opts, fn);
+  var res = '';
+
+  while (len--) {
+    var item = list[i++];
+    var lvl = getLevel(item);
+    var str = item.text || '';
+
+    res += li(lvl, str);
+    res += '\n';
+  }
+  return res;
+};
+
+bullets.flat = function(list, opts, fn) {
+  if (typeof opts === 'function') {
+    fn = opts;
+    opts = {};
+  }
+
+  var len = list.length, i = 0;
+  var lvl = getLevel(opts);
+  var li = listitem(opts, fn);
+  var res = '';
+
+  while (len--) {
+    var item = list[i++];
+    res += li(lvl, item);
+    res += '\n';
+  }
+  return res;
+};
+
+function getLevel(opts) {
+  opts = opts || {};
+  if (isNumber(opts.level)) {
+    return opts.level;
+  }
+  if (isNumber(opts.lvl)) {
+    return opts.lvl;
+  }
+  return 0;
+}
+
+
+/***/ }),
+
+/***/ 5511:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * is-number <https://github.com/jonschlinkert/is-number>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var typeOf = __webpack_require__(6961);
+
+module.exports = function isNumber(num) {
+  var type = typeOf(num);
+  if (type !== 'number' && type !== 'string') {
+    return false;
+  }
+  var n = +num;
+  return (n - n + 1) >= 0 && num !== '';
+};
+
+
+/***/ }),
+
+/***/ 8932:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -3932,6 +4097,1045 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
+/***/ 8947:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * expand-range <https://github.com/jonschlinkert/expand-range>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT license.
+ */
+
+
+
+var fill = __webpack_require__(8928);
+
+module.exports = function expandRange(str, options, fn) {
+  if (typeof str !== 'string') {
+    throw new TypeError('expand-range expects a string.');
+  }
+
+  if (typeof options === 'function') {
+    fn = options;
+    options = {};
+  }
+
+  if (typeof options === 'boolean') {
+    options = {};
+    options.makeRe = true;
+  }
+
+  // create arguments to pass to fill-range
+  var opts = options || {};
+  var args = str.split('..');
+  var len = args.length;
+  if (len > 3) { return str; }
+
+  // if only one argument, it can't expand so return it
+  if (len === 1) { return args; }
+
+  // if `true`, tell fill-range to regexify the string
+  if (typeof fn === 'boolean' && fn === true) {
+    opts.makeRe = true;
+  }
+
+  args.push(opts);
+  return fill.apply(null, args.concat(fn));
+};
+
+
+/***/ }),
+
+/***/ 8928:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * fill-range <https://github.com/jonschlinkert/fill-range>
+ *
+ * Copyright (c) 2014-2018, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+
+
+var isObject = __webpack_require__(2937);
+var isNumber = __webpack_require__(7821);
+var randomize = __webpack_require__(4875);
+var repeatStr = __webpack_require__(6976);
+var repeat = __webpack_require__(3301);
+
+/**
+ * Expose `fillRange`
+ */
+
+module.exports = fillRange;
+
+/**
+ * Return a range of numbers or letters.
+ *
+ * @param  {String} `a` Start of the range
+ * @param  {String} `b` End of the range
+ * @param  {String} `step` Increment or decrement to use.
+ * @param  {Function} `fn` Custom function to modify each element in the range.
+ * @return {Array}
+ */
+
+function fillRange(a, b, step, options, fn) {
+  if (a == null || b == null) {
+    throw new Error('fill-range expects the first and second args to be strings.');
+  }
+
+  if (typeof step === 'function') {
+    fn = step; options = {}; step = null;
+  }
+
+  if (typeof options === 'function') {
+    fn = options; options = {};
+  }
+
+  if (isObject(step)) {
+    options = step; step = '';
+  }
+
+  var expand, regex = false, sep = '';
+  var opts = options || {};
+
+  if (typeof opts.silent === 'undefined') {
+    opts.silent = true;
+  }
+
+  step = step || opts.step;
+
+  // store a ref to unmodified arg
+  var origA = a, origB = b;
+
+  b = (b.toString() === '-0') ? 0 : b;
+
+  if (opts.optimize || opts.makeRe) {
+    step = step ? (step += '~') : step;
+    expand = true;
+    regex = true;
+    sep = '~';
+  }
+
+  // handle special step characters
+  if (typeof step === 'string') {
+    var match = stepRe().exec(step);
+
+    if (match) {
+      var i = match.index;
+      var m = match[0];
+
+      // repeat string
+      if (m === '+') {
+        return repeat(a, b);
+
+      // randomize a, `b` times
+      } else if (m === '?') {
+        return [randomize(a, b)];
+
+      // expand right, no regex reduction
+      } else if (m === '>') {
+        step = step.substr(0, i) + step.substr(i + 1);
+        expand = true;
+
+      // expand to an array, or if valid create a reduced
+      // string for a regex logic `or`
+      } else if (m === '|') {
+        step = step.substr(0, i) + step.substr(i + 1);
+        expand = true;
+        regex = true;
+        sep = m;
+
+      // expand to an array, or if valid create a reduced
+      // string for a regex range
+      } else if (m === '~') {
+        step = step.substr(0, i) + step.substr(i + 1);
+        expand = true;
+        regex = true;
+        sep = m;
+      }
+    } else if (!isNumber(step)) {
+      if (!opts.silent) {
+        throw new TypeError('fill-range: invalid step.');
+      }
+      return null;
+    }
+  }
+
+  if (/[.&*()[\]^%$#@!]/.test(a) || /[.&*()[\]^%$#@!]/.test(b)) {
+    if (!opts.silent) {
+      throw new RangeError('fill-range: invalid range arguments.');
+    }
+    return null;
+  }
+
+  // has neither a letter nor number, or has both letters and numbers
+  // this needs to be after the step logic
+  if (!noAlphaNum(a) || !noAlphaNum(b) || hasBoth(a) || hasBoth(b)) {
+    if (!opts.silent) {
+      throw new RangeError('fill-range: invalid range arguments.');
+    }
+    return null;
+  }
+
+  // validate arguments
+  var isNumA = isNumber(zeros(a));
+  var isNumB = isNumber(zeros(b));
+
+  if ((!isNumA && isNumB) || (isNumA && !isNumB)) {
+    if (!opts.silent) {
+      throw new TypeError('fill-range: first range argument is incompatible with second.');
+    }
+    return null;
+  }
+
+  // by this point both are the same, so we
+  // can use A to check going forward.
+  var isNum = isNumA;
+  var num = formatStep(step);
+
+  // is the range alphabetical? or numeric?
+  if (isNum) {
+    // if numeric, coerce to an integer
+    a = +a; b = +b;
+  } else {
+    // otherwise, get the charCode to expand alpha ranges
+    a = a.charCodeAt(0);
+    b = b.charCodeAt(0);
+  }
+
+  // is the pattern descending?
+  var isDescending = a > b;
+
+  // don't create a character class if the args are < 0
+  if (a < 0 || b < 0) {
+    expand = false;
+    regex = false;
+  }
+
+  // detect padding
+  var padding = isPadded(origA, origB);
+  var res, pad, arr = [];
+  var ii = 0;
+
+  // character classes, ranges and logical `or`
+  if (regex) {
+    if (shouldExpand(a, b, num, isNum, padding, opts)) {
+      // make sure the correct separator is used
+      if (sep === '|' || sep === '~') {
+        sep = detectSeparator(a, b, num, isNum, isDescending);
+      }
+      return wrap([origA, origB], sep, opts);
+    }
+  }
+
+  while (isDescending ? (a >= b) : (a <= b)) {
+    if (padding && isNum) {
+      pad = padding(a);
+    }
+
+    // custom function
+    if (typeof fn === 'function') {
+      res = fn(a, isNum, pad, ii++);
+
+    // letters
+    } else if (!isNum) {
+      if (regex && isInvalidChar(a)) {
+        res = null;
+      } else {
+        res = String.fromCharCode(a);
+      }
+
+    // numbers
+    } else {
+      res = formatPadding(a, pad);
+    }
+
+    // add result to the array, filtering any nulled values
+    if (res !== null) arr.push(res);
+
+    // increment or decrement
+    if (isDescending) {
+      a -= num;
+    } else {
+      a += num;
+    }
+  }
+
+  // now that the array is expanded, we need to handle regex
+  // character classes, ranges or logical `or` that wasn't
+  // already handled before the loop
+  if ((regex || expand) && !opts.noexpand) {
+    // make sure the correct separator is used
+    if (sep === '|' || sep === '~') {
+      sep = detectSeparator(a, b, num, isNum, isDescending);
+    }
+    if (arr.length === 1 || a < 0 || b < 0) { return arr; }
+    return wrap(arr, sep, opts);
+  }
+
+  return arr;
+}
+
+/**
+ * Wrap the string with the correct regex
+ * syntax.
+ */
+
+function wrap(arr, sep, opts) {
+  if (sep === '~') { sep = '-'; }
+  var str = arr.join(sep);
+  var pre = opts && opts.regexPrefix;
+
+  // regex logical `or`
+  if (sep === '|') {
+    str = pre ? pre + str : str;
+    str = '(' + str + ')';
+  }
+
+  // regex character class
+  if (sep === '-') {
+    str = (pre && pre === '^')
+      ? pre + str
+      : str;
+    str = '[' + str + ']';
+  }
+  return [str];
+}
+
+/**
+ * Check for invalid characters
+ */
+
+function isCharClass(a, b, step, isNum, isDescending) {
+  if (isDescending) { return false; }
+  if (isNum) { return a <= 9 && b <= 9; }
+  if (a < b) { return step === 1; }
+  return false;
+}
+
+/**
+ * Detect the correct separator to use
+ */
+
+function shouldExpand(a, b, num, isNum, padding, opts) {
+  if (isNum && (a > 9 || b > 9)) { return false; }
+  return !padding && num === 1 && a < b;
+}
+
+/**
+ * Detect the correct separator to use
+ */
+
+function detectSeparator(a, b, step, isNum, isDescending) {
+  var isChar = isCharClass(a, b, step, isNum, isDescending);
+  if (!isChar) {
+    return '|';
+  }
+  return '~';
+}
+
+/**
+ * Correctly format the step based on type
+ */
+
+function formatStep(step) {
+  return Math.abs(step >> 0) || 1;
+}
+
+/**
+ * Format padding, taking leading `-` into account
+ */
+
+function formatPadding(ch, pad) {
+  var res = pad ? pad + ch : ch;
+  if (pad && ch.toString().charAt(0) === '-') {
+    res = '-' + pad + ch.toString().substr(1);
+  }
+  return res.toString();
+}
+
+/**
+ * Check for invalid characters
+ */
+
+function isInvalidChar(str) {
+  var ch = toStr(str);
+  return ch === '\\'
+    || ch === '['
+    || ch === ']'
+    || ch === '^'
+    || ch === '('
+    || ch === ')'
+    || ch === '`';
+}
+
+/**
+ * Convert to a string from a charCode
+ */
+
+function toStr(ch) {
+  return String.fromCharCode(ch);
+}
+
+
+/**
+ * Step regex
+ */
+
+function stepRe() {
+  return /\?|>|\||\+|\~/g;
+}
+
+/**
+ * Return true if `val` has either a letter
+ * or a number
+ */
+
+function noAlphaNum(val) {
+  return /[a-z0-9]/i.test(val);
+}
+
+/**
+ * Return true if `val` has both a letter and
+ * a number (invalid)
+ */
+
+function hasBoth(val) {
+  return /[a-z][0-9]|[0-9][a-z]/i.test(val);
+}
+
+/**
+ * Normalize zeros for checks
+ */
+
+function zeros(val) {
+  if (/^-*0+$/.test(val.toString())) {
+    return '0';
+  }
+  return val;
+}
+
+/**
+ * Return true if `val` has leading zeros,
+ * or a similar valid pattern.
+ */
+
+function hasZeros(val) {
+  return /[^.]\.|^-*0+[0-9]/.test(val);
+}
+
+/**
+ * If the string is padded, returns a curried function with
+ * the a cached padding string, or `false` if no padding.
+ *
+ * @param  {*} `origA` String or number.
+ * @return {String|Boolean}
+ */
+
+function isPadded(origA, origB) {
+  if (hasZeros(origA) || hasZeros(origB)) {
+    var alen = length(origA);
+    var blen = length(origB);
+
+    var len = alen >= blen
+      ? alen
+      : blen;
+
+    return function (a) {
+      return repeatStr('0', len - length(a));
+    };
+  }
+  return false;
+}
+
+/**
+ * Get the string length of `val`
+ */
+
+function length(val) {
+  return val.toString().length;
+}
+
+
+/***/ }),
+
+/***/ 7821:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * is-number <https://github.com/jonschlinkert/is-number>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var typeOf = __webpack_require__(6961);
+
+module.exports = function isNumber(num) {
+  var type = typeOf(num);
+  if (type !== 'number' && type !== 'string') {
+    return false;
+  }
+  var n = +num;
+  return (n - n + 1) >= 0 && num !== '';
+};
+
+
+/***/ }),
+
+/***/ 2937:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * isobject <https://github.com/jonschlinkert/isobject>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var isArray = __webpack_require__(893);
+
+module.exports = function isObject(val) {
+  return val != null && typeof val === 'object' && isArray(val) === false;
+};
+
+
+/***/ }),
+
+/***/ 7512:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var isObject = __webpack_require__(429);
+
+module.exports = function extend(o/*, objects*/) {
+  if (!isObject(o)) { o = {}; }
+
+  var len = arguments.length;
+  for (var i = 1; i < len; i++) {
+    var obj = arguments[i];
+
+    if (isObject(obj)) {
+      assign(o, obj);
+    }
+  }
+  return o;
+};
+
+function assign(a, b) {
+  for (var key in b) {
+    if (hasOwn(b, key)) {
+      a[key] = b[key];
+    }
+  }
+}
+
+/**
+ * Returns true if the given `key` is an own property of `obj`.
+ */
+
+function hasOwn(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+
+/***/ }),
+
+/***/ 5625:
+/***/ ((module) => {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+module.exports = function (obj) {
+  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+}
+
+function isBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+}
+
+
+/***/ }),
+
+/***/ 9633:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * is-even <https://github.com/jonschlinkert/is-even>
+ *
+ * Copyright (c) 2015, 2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+
+
+var isOdd = __webpack_require__(599);
+
+module.exports = function isEven(i) {
+  return !isOdd(i);
+};
+
+
+/***/ }),
+
+/***/ 429:
+/***/ ((module) => {
+
+"use strict";
+/*!
+ * is-extendable <https://github.com/jonschlinkert/is-extendable>
+ *
+ * Copyright (c) 2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+module.exports = function isExtendable(val) {
+  return typeof val !== 'undefined' && val !== null
+    && (typeof val === 'object' || typeof val === 'function');
+};
+
+
+/***/ }),
+
+/***/ 5680:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * is-number <https://github.com/jonschlinkert/is-number>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var typeOf = __webpack_require__(6961);
+
+module.exports = function isNumber(num) {
+  var type = typeOf(num);
+
+  if (type === 'string') {
+    if (!num.trim()) return false;
+  } else if (type !== 'number') {
+    return false;
+  }
+
+  return (num - num + 1) >= 0;
+};
+
+
+/***/ }),
+
+/***/ 599:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * is-odd <https://github.com/jonschlinkert/is-odd>
+ *
+ * Copyright (c) 2015-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+
+
+var isNumber = __webpack_require__(5680);
+
+module.exports = function isOdd(i) {
+  if (!isNumber(i)) {
+    throw new TypeError('is-odd expects a number.');
+  }
+  if (Number(i) !== Math.floor(i)) {
+    throw new RangeError('is-odd expects an integer.');
+  }
+  return !!(~~i & 1);
+};
+
+
+/***/ }),
+
+/***/ 893:
+/***/ ((module) => {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+
+/***/ 6961:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var isBuffer = __webpack_require__(5625);
+var toString = Object.prototype.toString;
+
+/**
+ * Get the native `typeof` a value.
+ *
+ * @param  {*} `val`
+ * @return {*} Native javascript type
+ */
+
+module.exports = function kindOf(val) {
+  // primitivies
+  if (typeof val === 'undefined') {
+    return 'undefined';
+  }
+  if (val === null) {
+    return 'null';
+  }
+  if (val === true || val === false || val instanceof Boolean) {
+    return 'boolean';
+  }
+  if (typeof val === 'string' || val instanceof String) {
+    return 'string';
+  }
+  if (typeof val === 'number' || val instanceof Number) {
+    return 'number';
+  }
+
+  // functions
+  if (typeof val === 'function' || val instanceof Function) {
+    return 'function';
+  }
+
+  // array
+  if (typeof Array.isArray !== 'undefined' && Array.isArray(val)) {
+    return 'array';
+  }
+
+  // check for instances of RegExp and Date before calling `toString`
+  if (val instanceof RegExp) {
+    return 'regexp';
+  }
+  if (val instanceof Date) {
+    return 'date';
+  }
+
+  // other objects
+  var type = toString.call(val);
+
+  if (type === '[object RegExp]') {
+    return 'regexp';
+  }
+  if (type === '[object Date]') {
+    return 'date';
+  }
+  if (type === '[object Arguments]') {
+    return 'arguments';
+  }
+  if (type === '[object Error]') {
+    return 'error';
+  }
+
+  // buffer
+  if (isBuffer(val)) {
+    return 'buffer';
+  }
+
+  // es6: Map, WeakMap, Set, WeakSet
+  if (type === '[object Set]') {
+    return 'set';
+  }
+  if (type === '[object WeakSet]') {
+    return 'weakset';
+  }
+  if (type === '[object Map]') {
+    return 'map';
+  }
+  if (type === '[object WeakMap]') {
+    return 'weakmap';
+  }
+  if (type === '[object Symbol]') {
+    return 'symbol';
+  }
+
+  // typed arrays
+  if (type === '[object Int8Array]') {
+    return 'int8array';
+  }
+  if (type === '[object Uint8Array]') {
+    return 'uint8array';
+  }
+  if (type === '[object Uint8ClampedArray]') {
+    return 'uint8clampedarray';
+  }
+  if (type === '[object Int16Array]') {
+    return 'int16array';
+  }
+  if (type === '[object Uint16Array]') {
+    return 'uint16array';
+  }
+  if (type === '[object Int32Array]') {
+    return 'int32array';
+  }
+  if (type === '[object Uint32Array]') {
+    return 'uint32array';
+  }
+  if (type === '[object Float32Array]') {
+    return 'float32array';
+  }
+  if (type === '[object Float64Array]') {
+    return 'float64array';
+  }
+
+  // must be a plain object
+  return 'object';
+};
+
+
+/***/ }),
+
+/***/ 8356:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * list-item <https://github.com/jonschlinkert/list-item>
+ *
+ * Copyright (c) 2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var isNumber = __webpack_require__(8488);
+var expand = __webpack_require__(8947);
+var repeat = __webpack_require__(6976);
+var extend = __webpack_require__(7512);
+
+/**
+ * Expose `listitem`
+ */
+
+module.exports = listitem;
+
+/**
+ * Returns a function to generate a plain-text/markdown list-item,
+ * allowing options to be cached for subsequent calls.
+ *
+ * ```js
+ * var li = listitem(options);
+ *
+ * li(0, 'Level 0 list item');
+ * //=> '- Level 0 list item'
+ *
+ * li(1, 'Level 1 list item');
+ * //=> '  * Level 1 list item'
+ *
+ * li(2, 'Level 2 list item');
+ * //=> '    + Level 2 list item'
+ * ```
+ *
+ * @param  {Object} `options` pass options to customize list item characters, indentation, etc.
+ * @param {Boolean} `options.nobullet` Pass true if you only want the list iten and identation, but no bullets.
+ * @param {String} `options.indent` The amount of leading indentation to use. default is `  `.
+ * @param {String|Array} `options.chars` If a string is passed, [expand-range][] will be used to generate an array of bullets (visit [expand-range][] to see all options.) Or directly pass an array of bullets, numbers, letters or other characters to use for each list item. Default `['-', '*', '+']`
+ * @param {Function} `fn` pass a function [expand-range][] to modify the bullet for an item as it's generated. See the [examples](#examples).
+ * @return {String} returns a formatted list item
+ * @api public
+ */
+
+function listitem(opts, fn) {
+  if (typeof opts === 'function') {
+    fn = opts;
+    opts = {};
+  }
+
+  opts = opts || {};
+  var ch = character(opts, fn);
+
+  return function(lvl, str) {
+    if (!isNumber(lvl)) {
+      throw new Error('expected level to be a number');
+    }
+
+    // cast to integer
+    lvl = +lvl;
+
+    var bullet = ch ? ch[lvl % ch.length] : '';
+    var indent = typeof opts.indent !== 'string'
+      ? (lvl > 0 ? '  ' : '')
+      : opts.indent;
+
+    var prefix = !opts.nobullet
+      ? bullet + ' '
+      : '';
+
+    var res = '';
+    res += repeat(indent, lvl);
+    res += prefix;
+    res += str;
+    return res;
+  };
+}
+
+/**
+ * Generate and cache the array of characters to use as
+ * bullets.
+ *
+ * - http://spec.commonmark.org/0.19/#list-items
+ * - https://daringfireball.net/projects/markdown/syntax#list
+ * - https://help.github.com/articles/markdown-basics/#lists
+ *
+ * @param  {Object} `opts` Options to pass to [expand-range][]
+ * @param  {Function} `fn`
+ * @return {Array}
+ */
+
+function character(opts, fn) {
+  opts = extend({}, opts);
+  var chars = opts.chars || ['-', '*', '+'];
+
+  if (typeof chars === 'string') {
+    return expand(chars, opts, fn);
+  }
+
+  if (typeof fn === 'function') {
+    return chars.map(fn);
+  }
+  return chars;
+}
+
+
+/***/ }),
+
+/***/ 8488:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * is-number <https://github.com/jonschlinkert/is-number>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var typeOf = __webpack_require__(6961);
+
+module.exports = function isNumber(num) {
+  var type = typeOf(num);
+  if (type !== 'number' && type !== 'string') {
+    return false;
+  }
+  var n = +num;
+  return (n - n + 1) >= 0 && num !== '';
+};
+
+
+/***/ }),
+
+/***/ 7663:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/*!
+ * markdown-list <https://github.com/jonschlinkert/markdown-list>
+ *
+ * Copyright (c) 2016, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+var expand = __webpack_require__(8947);
+var isEven = __webpack_require__(9633);
+var bullet = __webpack_require__(5811);
+var toList = __webpack_require__(7723);
+
+module.exports = function createList(list, options, fn) {
+  if (typeof options === 'function') {
+    fn = options;
+    options = {};
+  }
+
+  options = options || {};
+  if (typeof list === 'string') {
+    list = toList(list, fn);
+  }
+
+  if (!Array.isArray(list)) {
+    throw new TypeError('expected list to be an array or string');
+  }
+
+  if (typeof list[0] === 'string') {
+    list = list.reduce(function(acc, str) {
+      return acc.concat(toList(str, fn));
+    }, []);
+  }
+
+  list = list.map(function(item) {
+    if (item.level > 0 && isEven(item.level)) {
+      item.level = item.level / 2;
+    }
+    return item;
+  });
+
+  var isNumber = /\d/.test(String(list[0].lead));
+  if (isNumber) {
+    options.chars = expand('1..100');
+  }
+
+  return bullet(list, options, fn);
+};
+
+
+/***/ }),
+
+/***/ 297:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var crypto = __webpack_require__(6417)
+var max = Math.pow(2, 32)
+
+module.exports = random
+module.exports.cryptographic = true
+
+function random () {
+  var buf = crypto
+    .randomBytes(4)
+    .readUInt32BE(0)
+
+  return buf / max
+}
+
+
+/***/ }),
+
 /***/ 467:
 /***/ ((module, exports, __webpack_require__) => {
 
@@ -3942,11 +5146,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var Stream = _interopDefault(__webpack_require__(413));
-var http = _interopDefault(__webpack_require__(605));
-var Url = _interopDefault(__webpack_require__(835));
-var https = _interopDefault(__webpack_require__(211));
-var zlib = _interopDefault(__webpack_require__(761));
+var Stream = _interopDefault(__webpack_require__(2413));
+var http = _interopDefault(__webpack_require__(8605));
+var Url = _interopDefault(__webpack_require__(8835));
+var https = _interopDefault(__webpack_require__(7211));
+var zlib = _interopDefault(__webpack_require__(8761));
 
 // Based on https://github.com/tmpvar/jsdom/blob/aa85b2abf07766ff7bf5c1f6daafb3726f2f2db5/lib/jsdom/living/blob.js
 
@@ -4097,7 +5301,7 @@ FetchError.prototype.name = 'FetchError';
 
 let convert;
 try {
-	convert = __webpack_require__(877).convert;
+	convert = __webpack_require__(2877).convert;
 } catch (e) {}
 
 const INTERNALS = Symbol('Body internals');
@@ -5589,10 +6793,10 @@ exports.FetchError = FetchError;
 
 /***/ }),
 
-/***/ 223:
+/***/ 1223:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var wrappy = __webpack_require__(940)
+var wrappy = __webpack_require__(2940)
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
 
@@ -5638,27 +6842,461 @@ function onceStrict (fn) {
 
 /***/ }),
 
-/***/ 294:
+/***/ 4875:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = __webpack_require__(219);
+"use strict";
+/*!
+ * randomatic <https://github.com/jonschlinkert/randomatic>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+
+
+var isNumber = __webpack_require__(8847);
+var typeOf = __webpack_require__(5567);
+var mathRandom = __webpack_require__(297);
+
+/**
+ * Expose `randomatic`
+ */
+
+module.exports = randomatic;
+module.exports.isCrypto = !!mathRandom.cryptographic;
+
+/**
+ * Available mask characters
+ */
+
+var type = {
+  lower: 'abcdefghijklmnopqrstuvwxyz',
+  upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  number: '0123456789',
+  special: '~!@#$%^&()_+-={}[];\',.'
+};
+
+type.all = type.lower + type.upper + type.number + type.special;
+
+/**
+ * Generate random character sequences of a specified `length`,
+ * based on the given `pattern`.
+ *
+ * @param {String} `pattern` The pattern to use for generating the random string.
+ * @param {String} `length` The length of the string to generate.
+ * @param {String} `options`
+ * @return {String}
+ * @api public
+ */
+
+function randomatic(pattern, length, options) {
+  if (typeof pattern === 'undefined') {
+    throw new Error('randomatic expects a string or number.');
+  }
+
+  var custom = false;
+  if (arguments.length === 1) {
+    if (typeof pattern === 'string') {
+      length = pattern.length;
+
+    } else if (isNumber(pattern)) {
+      options = {};
+      length = pattern;
+      pattern = '*';
+    }
+  }
+
+  if (typeOf(length) === 'object' && length.hasOwnProperty('chars')) {
+    options = length;
+    pattern = options.chars;
+    length = pattern.length;
+    custom = true;
+  }
+
+  var opts = options || {};
+  var mask = '';
+  var res = '';
+
+  // Characters to be used
+  if (pattern.indexOf('?') !== -1) mask += opts.chars;
+  if (pattern.indexOf('a') !== -1) mask += type.lower;
+  if (pattern.indexOf('A') !== -1) mask += type.upper;
+  if (pattern.indexOf('0') !== -1) mask += type.number;
+  if (pattern.indexOf('!') !== -1) mask += type.special;
+  if (pattern.indexOf('*') !== -1) mask += type.all;
+  if (custom) mask += pattern;
+
+  // Characters to exclude
+  if (opts.exclude) {
+    var exclude = typeOf(opts.exclude) === 'string' ? opts.exclude : opts.exclude.join('');
+    exclude = exclude.replace(new RegExp('[\\]]+', 'g'), '');
+    mask = mask.replace(new RegExp('[' + exclude + ']+', 'g'), '');
+    
+    if(opts.exclude.indexOf(']') !== -1) mask = mask.replace(new RegExp('[\\]]+', 'g'), '');
+  }
+
+  while (length--) {
+    res += mask.charAt(parseInt(mathRandom() * mask.length, 10));
+  }
+  return res;
+};
 
 
 /***/ }),
 
-/***/ 219:
+/***/ 8847:
+/***/ ((module) => {
+
+"use strict";
+/*!
+ * is-number <https://github.com/jonschlinkert/is-number>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+
+
+module.exports = function isNumber(num) {
+  var type = typeof num;
+
+  if (type === 'string' || num instanceof String) {
+    // an empty string would be coerced to true with the below logic
+    if (!num.trim()) return false;
+  } else if (type !== 'number' && !(num instanceof Number)) {
+    return false;
+  }
+
+  return (num - num + 1) >= 0;
+};
+
+
+/***/ }),
+
+/***/ 5567:
+/***/ ((module) => {
+
+var toString = Object.prototype.toString;
+
+module.exports = function kindOf(val) {
+  if (val === void 0) return 'undefined';
+  if (val === null) return 'null';
+
+  var type = typeof val;
+  if (type === 'boolean') return 'boolean';
+  if (type === 'string') return 'string';
+  if (type === 'number') return 'number';
+  if (type === 'symbol') return 'symbol';
+  if (type === 'function') {
+    return isGeneratorFn(val) ? 'generatorfunction' : 'function';
+  }
+
+  if (isArray(val)) return 'array';
+  if (isBuffer(val)) return 'buffer';
+  if (isArguments(val)) return 'arguments';
+  if (isDate(val)) return 'date';
+  if (isError(val)) return 'error';
+  if (isRegexp(val)) return 'regexp';
+
+  switch (ctorName(val)) {
+    case 'Symbol': return 'symbol';
+    case 'Promise': return 'promise';
+
+    // Set, Map, WeakSet, WeakMap
+    case 'WeakMap': return 'weakmap';
+    case 'WeakSet': return 'weakset';
+    case 'Map': return 'map';
+    case 'Set': return 'set';
+
+    // 8-bit typed arrays
+    case 'Int8Array': return 'int8array';
+    case 'Uint8Array': return 'uint8array';
+    case 'Uint8ClampedArray': return 'uint8clampedarray';
+
+    // 16-bit typed arrays
+    case 'Int16Array': return 'int16array';
+    case 'Uint16Array': return 'uint16array';
+
+    // 32-bit typed arrays
+    case 'Int32Array': return 'int32array';
+    case 'Uint32Array': return 'uint32array';
+    case 'Float32Array': return 'float32array';
+    case 'Float64Array': return 'float64array';
+  }
+
+  if (isGeneratorObj(val)) {
+    return 'generator';
+  }
+
+  // Non-plain objects
+  type = toString.call(val);
+  switch (type) {
+    case '[object Object]': return 'object';
+    // iterators
+    case '[object Map Iterator]': return 'mapiterator';
+    case '[object Set Iterator]': return 'setiterator';
+    case '[object String Iterator]': return 'stringiterator';
+    case '[object Array Iterator]': return 'arrayiterator';
+  }
+
+  // other
+  return type.slice(8, -1).toLowerCase().replace(/\s/g, '');
+};
+
+function ctorName(val) {
+  return typeof val.constructor === 'function' ? val.constructor.name : null;
+}
+
+function isArray(val) {
+  if (Array.isArray) return Array.isArray(val);
+  return val instanceof Array;
+}
+
+function isError(val) {
+  return val instanceof Error || (typeof val.message === 'string' && val.constructor && typeof val.constructor.stackTraceLimit === 'number');
+}
+
+function isDate(val) {
+  if (val instanceof Date) return true;
+  return typeof val.toDateString === 'function'
+    && typeof val.getDate === 'function'
+    && typeof val.setDate === 'function';
+}
+
+function isRegexp(val) {
+  if (val instanceof RegExp) return true;
+  return typeof val.flags === 'string'
+    && typeof val.ignoreCase === 'boolean'
+    && typeof val.multiline === 'boolean'
+    && typeof val.global === 'boolean';
+}
+
+function isGeneratorFn(name, val) {
+  return ctorName(name) === 'GeneratorFunction';
+}
+
+function isGeneratorObj(val) {
+  return typeof val.throw === 'function'
+    && typeof val.return === 'function'
+    && typeof val.next === 'function';
+}
+
+function isArguments(val) {
+  try {
+    if (typeof val.length === 'number' && typeof val.callee === 'function') {
+      return true;
+    }
+  } catch (err) {
+    if (err.message.indexOf('callee') !== -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * If you need to support Safari 5-7 (8-10 yr-old browser),
+ * take a look at https://github.com/feross/is-buffer
+ */
+
+function isBuffer(val) {
+  if (val.constructor && typeof val.constructor.isBuffer === 'function') {
+    return val.constructor.isBuffer(val);
+  }
+  return false;
+}
+
+
+/***/ }),
+
+/***/ 3301:
+/***/ ((module) => {
+
+"use strict";
+/*!
+ * repeat-element <https://github.com/jonschlinkert/repeat-element>
+ *
+ * Copyright (c) 2015-present, Jon Schlinkert.
+ * Licensed under the MIT license.
+ */
+
+
+
+module.exports = function repeat(ele, num) {
+  var arr = new Array(num);
+
+  for (var i = 0; i < num; i++) {
+    arr[i] = ele;
+  }
+
+  return arr;
+};
+
+
+/***/ }),
+
+/***/ 6976:
+/***/ ((module) => {
+
+"use strict";
+/*!
+ * repeat-string <https://github.com/jonschlinkert/repeat-string>
+ *
+ * Copyright (c) 2014-2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+/**
+ * Results cache
+ */
+
+var res = '';
+var cache;
+
+/**
+ * Expose `repeat`
+ */
+
+module.exports = repeat;
+
+/**
+ * Repeat the given `string` the specified `number`
+ * of times.
+ *
+ * **Example:**
+ *
+ * ```js
+ * var repeat = require('repeat-string');
+ * repeat('A', 5);
+ * //=> AAAAA
+ * ```
+ *
+ * @param {String} `string` The string to repeat
+ * @param {Number} `number` The number of times to repeat the string
+ * @return {String} Repeated string
+ * @api public
+ */
+
+function repeat(str, num) {
+  if (typeof str !== 'string') {
+    throw new TypeError('expected a string');
+  }
+
+  // cover common, quick use cases
+  if (num === 1) return str;
+  if (num === 2) return str + str;
+
+  var max = str.length * num;
+  if (cache !== str || typeof cache === 'undefined') {
+    cache = str;
+    res = '';
+  } else if (res.length >= max) {
+    return res.substr(0, max);
+  }
+
+  while (max > res.length && num > 1) {
+    if (num & 1) {
+      res += str;
+    }
+
+    num >>= 1;
+    str += str;
+  }
+
+  res += str;
+  res = res.substr(0, max);
+  return res;
+}
+
+
+/***/ }),
+
+/***/ 7723:
+/***/ ((module) => {
+
+"use strict";
+/*!
+ * to-list <https://github.com/jonschlinkert/to-list>
+ *
+ * Copyright (c) 2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+
+
+module.exports = function toList(str, fn) {
+  if (typeof str !== 'string') {
+    throw new Error('expected a string');
+  }
+
+  if (!fn) fn = identity;
+  var lines = str.split(/\r\n|\n/);
+  var len = lines.length, i = -1;
+  var list = [];
+
+  while (++i < len) {
+    var line = lines[i];
+    var lead = line.match(/^[-+*\s]+/);
+    var orig = lead ? lead[0] : '';
+    var level = 0;
+
+    if (lead) {
+      var spaces = /^ +/.exec(lead);
+      var tabs = /^\t+/.exec(lead);
+
+      if (spaces) {
+        level = spaces[0].length;
+      } else if (tabs) {
+        level = (tabs[0].length / 2);
+      }
+    }
+
+    line = line.slice(orig.length);
+    var item = fn({
+      text: line,
+      lead: lead ? lead[0] : '',
+      level: toEven(level)
+    });
+    list.push(item);
+  }
+  return list;
+};
+
+function identity(item) {
+  return item;
+}
+
+function toEven(num) {
+  return Math.round(num / 2) * 2;
+}
+
+
+/***/ }),
+
+/***/ 4294:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = __webpack_require__(4219);
+
+
+/***/ }),
+
+/***/ 4219:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 
-var net = __webpack_require__(631);
-var tls = __webpack_require__(16);
-var http = __webpack_require__(605);
-var https = __webpack_require__(211);
-var events = __webpack_require__(614);
-var assert = __webpack_require__(357);
-var util = __webpack_require__(669);
+var net = __webpack_require__(1631);
+var tls = __webpack_require__(4016);
+var http = __webpack_require__(8605);
+var https = __webpack_require__(7211);
+var events = __webpack_require__(8614);
+var assert = __webpack_require__(2357);
+var util = __webpack_require__(1669);
 
 
 exports.httpOverHttp = httpOverHttp;
@@ -5918,7 +7556,7 @@ exports.debug = debug; // for test
 
 /***/ }),
 
-/***/ 429:
+/***/ 5030:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -5944,7 +7582,7 @@ exports.getUserAgent = getUserAgent;
 
 /***/ }),
 
-/***/ 940:
+/***/ 2940:
 /***/ ((module) => {
 
 // Returns a wrapper function that returns a wrapped callback
@@ -5984,7 +7622,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 877:
+/***/ 2877:
 /***/ ((module) => {
 
 module.exports = eval("require")("encoding");
@@ -5992,7 +7630,7 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
-/***/ 357:
+/***/ 2357:
 /***/ ((module) => {
 
 "use strict";
@@ -6000,7 +7638,15 @@ module.exports = require("assert");
 
 /***/ }),
 
-/***/ 614:
+/***/ 6417:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("crypto");
+
+/***/ }),
+
+/***/ 8614:
 /***/ ((module) => {
 
 "use strict";
@@ -6008,7 +7654,7 @@ module.exports = require("events");
 
 /***/ }),
 
-/***/ 747:
+/***/ 5747:
 /***/ ((module) => {
 
 "use strict";
@@ -6016,7 +7662,7 @@ module.exports = require("fs");
 
 /***/ }),
 
-/***/ 605:
+/***/ 8605:
 /***/ ((module) => {
 
 "use strict";
@@ -6024,7 +7670,7 @@ module.exports = require("http");
 
 /***/ }),
 
-/***/ 211:
+/***/ 7211:
 /***/ ((module) => {
 
 "use strict";
@@ -6032,7 +7678,7 @@ module.exports = require("https");
 
 /***/ }),
 
-/***/ 631:
+/***/ 1631:
 /***/ ((module) => {
 
 "use strict";
@@ -6040,7 +7686,7 @@ module.exports = require("net");
 
 /***/ }),
 
-/***/ 87:
+/***/ 2087:
 /***/ ((module) => {
 
 "use strict";
@@ -6048,7 +7694,7 @@ module.exports = require("os");
 
 /***/ }),
 
-/***/ 622:
+/***/ 5622:
 /***/ ((module) => {
 
 "use strict";
@@ -6056,7 +7702,7 @@ module.exports = require("path");
 
 /***/ }),
 
-/***/ 413:
+/***/ 2413:
 /***/ ((module) => {
 
 "use strict";
@@ -6064,7 +7710,7 @@ module.exports = require("stream");
 
 /***/ }),
 
-/***/ 16:
+/***/ 4016:
 /***/ ((module) => {
 
 "use strict";
@@ -6072,7 +7718,7 @@ module.exports = require("tls");
 
 /***/ }),
 
-/***/ 835:
+/***/ 8835:
 /***/ ((module) => {
 
 "use strict";
@@ -6080,7 +7726,7 @@ module.exports = require("url");
 
 /***/ }),
 
-/***/ 669:
+/***/ 1669:
 /***/ ((module) => {
 
 "use strict";
@@ -6088,7 +7734,7 @@ module.exports = require("util");
 
 /***/ }),
 
-/***/ 761:
+/***/ 8761:
 /***/ ((module) => {
 
 "use strict";
@@ -6162,6 +7808,6 @@ module.exports = require("zlib");
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(932);
+/******/ 	return __webpack_require__(2932);
 /******/ })()
 ;
