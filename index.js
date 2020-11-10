@@ -39,7 +39,7 @@ export function formatCommits(commits, chStoryUrl) {
     } = com;
     const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(ch)?(?<chId>\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
     const matches = message.match(regex);
-    const chType = formatChType(matches.groups.chType);
+    const chType = formatChType(matches && matches.groups.chType);
     const prMsg = matches && matches.groups.prMsg;
     const prLink =
       (matches &&
