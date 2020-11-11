@@ -147,7 +147,7 @@ export async function run() {
     if (!isPreRelease) {
       return await octokit.repos.updateRelease({
         ...github.context.repo,
-        release_id: github.context.release.id,
+        release_id: github.context.payload.release.id,
         prerelease: false,
       });
     }
