@@ -145,6 +145,7 @@ export async function run() {
 
     /* UPDATE PRERELEASE TO RELEASE */
     if (!isPreRelease) {
+      console.log('what is github.context?', github.context);
       return await octokit.repos.updateRelease({
         ...github.context.repo,
         tag_name: tag,
