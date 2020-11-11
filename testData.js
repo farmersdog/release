@@ -88,8 +88,58 @@ export const formattedCommitsAll = {
   ...formattedPrOnlyCommits,
 };
 
-export const fullChangelog = `
-### feature
-- ${formattedCommitsAll.feature[0].prMsg} ${formattedCommitsAll.feature[0].chLink}
-  ${formattedCommitsAll.feature[0].prLink}
+export const changelogCommits = [
+  fullCommits[0],
+  fullCommits[2],
+  fullCommits[3],
+  prOnlyCommits[0],
+];
+
+export const formattedChangelogCommits = {
+  feature: [
+    {
+      chLink: `[ch123](${chStoryUrl}/123)`,
+      prMsg: 'I am a feature',
+      prLink: `[#123](${url}/pull/123)`,
+      sha: fullCommits[0].sha.substring(0, 6),
+    },
+  ],
+  chore: [
+    {
+      chLink: `[ch345](${chStoryUrl}/345)`,
+      prMsg: 'I am a chore',
+      prLink: `[#345](${url}/pull/345)`,
+      sha: fullCommits[2].sha.substring(0, 6),
+    },
+  ],
+  bug: [
+    {
+      chLink: `[ch678](${chStoryUrl}/678)`,
+      prMsg: 'I am a bug fix',
+      prLink: `[#678](${url}/pull/678)`,
+      sha: fullCommits[3].sha.substring(0, 6),
+    },
+  ],
+  other: [
+    {
+      chLink: null,
+      prMsg: 'I am another type of task.',
+      prLink: `[#340](${url}/pull/340)`,
+      sha: prOnlyCommits[0].sha.substring(0, 6),
+    },
+  ],
+};
+
+export const fullChangelog = `### feature
+- ${formattedChangelogCommits.feature[0].prMsg} ${formattedChangelogCommits.feature[0].chLink} ${formattedChangelogCommits.feature[0].prLink}
+
+### chore
+- ${formattedChangelogCommits.chore[0].prMsg} ${formattedChangelogCommits.chore[0].chLink} ${formattedChangelogCommits.chore[0].prLink}
+
+### bug
+- ${formattedChangelogCommits.bug[0].prMsg} ${formattedChangelogCommits.bug[0].chLink} ${formattedChangelogCommits.bug[0].prLink}
+
+### other
+- ${formattedChangelogCommits.other[0].prMsg} ${formattedChangelogCommits.other[0].chLink} ${formattedChangelogCommits.other[0].prLink}
+
 `;

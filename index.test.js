@@ -2,6 +2,7 @@ import * as github from '@actions/github';
 import * as core from '@actions/core';
 import { formatCommits, generateChangelog, run } from '.';
 import {
+  changelogCommits,
   chStoryUrl,
   formattedFullCommits,
   formattedCommitsAll,
@@ -64,7 +65,7 @@ describe('Release', () => {
 
   describe('generateChangelog(formattedCommits)', () => {
     test('returns a properly formatted changelog', () => {
-      const commits = [...fullCommits, ...prOnlyCommits];
+      const commits = changelogCommits;
       const formattedCommits = formatCommits(commits, chStoryUrl);
       const changelog = generateChangelog(formattedCommits);
       const expectedChangelog = fullChangelog;

@@ -84,17 +84,14 @@ function generateChangelog(formattedCommits) {
   return Object.keys(formattedCommits).reduce((acc, type) => {
     const heading = type;
     const markdownCommits = formattedCommits[type].map(
-      (commit) => `
-      - ${commit.prMsg} ${commit.chLink && commit.chLink} ${
-        commit.prLink && commit.prLink
-      }
-    `
+      (commit) =>
+        `${commit.prMsg} ${commit.chLink && commit.chLink} ${
+          commit.prLink && commit.prLink
+        }`
     );
     const listOfCommits = list(markdownCommits);
 
-    const log = `${acc}### ${heading}
-    ${listOfCommits}
-    `;
+    const log = `${acc}### ${heading}\n${listOfCommits}\n`;
 
     return log;
   }, '');
