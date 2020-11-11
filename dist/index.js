@@ -146,6 +146,14 @@ async function run() {
       const changelog = generateChangelog(formattedCommits);
       core.info(changelog);
       // Create a github release (type: prerelease) w/ changelog attached
+
+      return await octokit.repos.createRelease({
+        ...github.context.repo,
+        name: tag,
+        tag_name: tag,
+        body: changelog,
+        prerelease: true,
+      });
     }
 
     // If already a prerelease, move to release state
@@ -153,7 +161,9 @@ async function run() {
       core.info('hello');
     }
 
-    return core.setOutput('hi');
+    return core.setFailed(
+      'The workflow did not run the necessary steps! Double check your env vars.'
+    );
   } catch (error) {
     return core.setFailed(error.message);
   }
