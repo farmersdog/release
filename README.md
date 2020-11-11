@@ -60,9 +60,7 @@ One might want to create a simple make command that triggers this workflow from 
 that allows this to be triggered.
 
 ```
-on:
-  release:
-    types: ['released']
+on: repository_dispatch
 ...
 
 uses: actions/release@v1

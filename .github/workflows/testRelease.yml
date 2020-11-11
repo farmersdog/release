@@ -1,8 +1,5 @@
 name: On Release
-on:
-  release:
-    types: ['released']
-
+on: repository_dispatch
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -10,9 +7,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: action
-      - name: Fetch Latest Release
-        uses: thebritican/fetch-latest-release@v2.0.0
-        id: latestRelease
       - name: Test farmersdog/release action
         uses: './action'
         with:
