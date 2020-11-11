@@ -68,16 +68,21 @@ function formatCommits(commits, chStoryUrl) {
 }
 
 function generateChangelog(formattedCommits) {
-  core.info(formattedCommits);
-
   return Object.keys(formattedCommits).reduce((acc, type) => {
     const heading = `${type.charAt(0).toUpperCase()}${type.slice(1)}`;
-    const markdownCommits = formattedCommits[type].map(
-      (commit) =>
-        `${commit.prMsg} ${commit.chLink && commit.chLink} ${
-          commit.prLink && commit.prLink
-        }`
-    );
+    const markdownCommits = formattedCommits[type].map((commit) => {
+      let msg = commit.prMsg;
+
+      if (commit.chLink) {
+        msg = `${msg} ${commit.chLink}`;
+      }
+
+      if (commit.prLink) {
+        msg = `${msg} ${commit.prLink}`;
+      }
+
+      return msg;
+    });
     const listOfCommits = list(markdownCommits);
 
     const log = `${acc}### ${heading}\n${listOfCommits}\n`;

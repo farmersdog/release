@@ -33,6 +33,16 @@ export const prOnlyCommits = [
   },
 ];
 
+export const prMsgOnlyCommits = [
+  {
+    commit: {
+      message:
+        'I am another type of task that was merged directly to master! Oops!',
+    },
+    sha: sha1(''),
+  },
+];
+
 export const formattedFullCommits = {
   feature: [
     {
@@ -93,6 +103,7 @@ export const changelogCommits = [
   fullCommits[2],
   fullCommits[3],
   prOnlyCommits[0],
+  prMsgOnlyCommits[0],
 ];
 
 export const formattedChangelogCommits = {
@@ -127,6 +138,13 @@ export const formattedChangelogCommits = {
       prLink: `[#340](${url}/pull/340)`,
       sha: prOnlyCommits[0].sha.substring(0, 6),
     },
+    {
+      chLink: null,
+      prMsg:
+        'I am another type of task that was merged directly to master! Oops!',
+      prLink: null,
+      sha: prMsgOnlyCommits[0].sha.substring(0, 6),
+    },
   ],
 };
 
@@ -140,6 +158,7 @@ export const fullChangelog = `### Feature
 - ${formattedChangelogCommits.chore[0].prMsg} ${formattedChangelogCommits.chore[0].chLink} ${formattedChangelogCommits.chore[0].prLink}
 
 ### Other
-- ${formattedChangelogCommits.other[0].prMsg} ${formattedChangelogCommits.other[0].chLink} ${formattedChangelogCommits.other[0].prLink}
+- ${formattedChangelogCommits.other[0].prMsg} ${formattedChangelogCommits.other[0].prLink}
+- ${formattedChangelogCommits.other[1].prMsg}
 
 `;
