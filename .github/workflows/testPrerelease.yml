@@ -1,0 +1,21 @@
+name: On Tag
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: action
+      - name: Fetch Latest Release
+        uses: thebritican/fetch-latest-release@v2.0.0
+        id: latestRelease
+      - name: Test farmersdog/release action
+        uses: './action'
+        with:
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
+          chStoryUrl: ${{ secrets.CH_STORY_URL }}
+          previousTag: ${{ steps.latestRelease.outputs.tag_name }}

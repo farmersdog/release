@@ -79,6 +79,7 @@ export async function run() {
   try {
     const previousTag = core.getInput('previousTag');
     const prerelease = core.getInput('prerelease');
+    const isPreRelease = prerelease === 'true';
     const ghToken = core.getInput('ghToken');
     const chStoryUrl = core.getInput('chStoryUrl');
     const { ref } = github.context;
@@ -89,13 +90,7 @@ export async function run() {
       return core.setFailed('Must provide ghToken');
     }
 
-    if (!chStoryUrl) {
-      return core.setFailed('Must provide chStoryUrl');
-    }
-
-    // Mask tokens:
     core.setSecret('ghToken');
-    core.setSecret('chStoryUrl');
 
     if (!validTag || !validTag.groups.tag) {
       return core.setFailed('Tag must follow format rules: v##.##.##');
@@ -104,20 +99,28 @@ export async function run() {
     const {
       groups: { tag },
     } = validTag;
+    const octokit = github.getOctokit(ghToken);
 
-    // Create prerelease
-    // Note on bools: https://github.com/actions/toolkit/issues/361
-    if (prerelease === 'true') {
+    core.info(
+      `Tag ${tag}: Creating a ${isPreRelease ? 'prerelease' : 'release'}...`
+    );
+
+    /* CREATE PRERELEASE */
+    if (isPreRelease) {
+      // CH Story URL is required for prerelease
+      if (!chStoryUrl) {
+        return core.setFailed('Must provide chStoryUrl');
+      }
+
+      core.setSecret('chStoryUrl');
+
+      // Previous Tag is required for prerelease
       if (!previousTag) {
         return core.setFailed(
           'Must provide a previousTag to create a prerelease'
         );
       }
 
-      core.info(`Tag ${tag}: Creating a prerelease...`);
-
-      // Get list of commits
-      const octokit = github.getOctokit(ghToken);
       const {
         data: { commits },
       } = await octokit.repos.compareCommits({
@@ -128,8 +131,8 @@ export async function run() {
 
       const formattedCommits = formatCommits(commits);
       const changelog = generateChangelog(formattedCommits);
+
       core.info(changelog);
-      // Create a github release (type: prerelease) w/ changelog attached
 
       return await octokit.repos.createRelease({
         ...github.context.repo,
@@ -140,9 +143,13 @@ export async function run() {
       });
     }
 
-    // If already a prerelease, move to release state
-    if (prerelease === 'false') {
-      core.info('hello');
+    /* UPDATE PRERELEASE TO RELEASE */
+    if (!isPreRelease) {
+      return await octokit.repos.updateRelease({
+        ...github.context.repo,
+        tag_name: tag,
+        prerelease: false,
+      });
     }
 
     return core.setFailed(

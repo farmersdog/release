@@ -151,5 +151,28 @@ describe('Release', () => {
         );
       });
     });
+
+    describe('on release', () => {
+      beforeEach(() => {
+        // Reset inputs
+        inputs = {};
+      });
+
+      test('should call core.info', async () => {
+        github.context.ref = 'refs/tags/v20.0.0';
+        inputs = {
+          chStoryUrl,
+          ghToken: '123',
+          prerelease: 'false',
+          previousTag: 'v20.0.0',
+        };
+
+        await run();
+
+        expect(core.info).toHaveBeenCalledWith(
+          'Tag v20.0.0: Creating a release...'
+        );
+      });
+    });
   });
 });

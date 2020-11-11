@@ -1,11 +1,10 @@
-name: On Tag
+name: On Release
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types: ['released']
 
 jobs:
-  prerelease:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,5 +17,4 @@ jobs:
         uses: './action'
         with:
           ghToken: ${{ secrets.GITHUB_TOKEN }}
-          chStoryUrl: ${{ secrets.CH_STORY_URL }}
-          previousTag: ${{ steps.latestRelease.outputs.tag_name }}
+          prerelease: 'false'
