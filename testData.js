@@ -13,11 +13,11 @@ export const fullCommits = [
     sha: sha1(''),
   },
   {
-    commit: { message: '(chore) I am a chore [ch345] (#345)' },
+    commit: { message: '(bug) I am a bug fix [ch678] (#678)' },
     sha: sha1(''),
   },
   {
-    commit: { message: '(bug) I am a bug fix [ch678] (#678)' },
+    commit: { message: '(chore) I am a chore [ch345] (#345)' },
     sha: sha1(''),
   },
 ];
@@ -48,20 +48,20 @@ export const formattedFullCommits = {
       sha: fullCommits[1].sha.substring(0, 6),
     },
   ],
-  chore: [
-    {
-      chLink: `[ch345](${chStoryUrl}/345)`,
-      prMsg: 'I am a chore',
-      prLink: `[#345](${url}/pull/345)`,
-      sha: fullCommits[2].sha.substring(0, 6),
-    },
-  ],
   bug: [
     {
       chLink: `[ch678](${chStoryUrl}/678)`,
       prMsg: 'I am a bug fix',
       prLink: `[#678](${url}/pull/678)`,
       sha: fullCommits[3].sha.substring(0, 6),
+    },
+  ],
+  chore: [
+    {
+      chLink: `[ch345](${chStoryUrl}/345)`,
+      prMsg: 'I am a chore',
+      prLink: `[#345](${url}/pull/345)`,
+      sha: fullCommits[2].sha.substring(0, 6),
     },
   ],
 };
@@ -104,20 +104,20 @@ export const formattedChangelogCommits = {
       sha: fullCommits[0].sha.substring(0, 6),
     },
   ],
-  chore: [
-    {
-      chLink: `[ch345](${chStoryUrl}/345)`,
-      prMsg: 'I am a chore',
-      prLink: `[#345](${url}/pull/345)`,
-      sha: fullCommits[2].sha.substring(0, 6),
-    },
-  ],
   bug: [
     {
       chLink: `[ch678](${chStoryUrl}/678)`,
       prMsg: 'I am a bug fix',
       prLink: `[#678](${url}/pull/678)`,
       sha: fullCommits[3].sha.substring(0, 6),
+    },
+  ],
+  chore: [
+    {
+      chLink: `[ch345](${chStoryUrl}/345)`,
+      prMsg: 'I am a chore',
+      prLink: `[#345](${url}/pull/345)`,
+      sha: fullCommits[2].sha.substring(0, 6),
     },
   ],
   other: [
@@ -130,16 +130,16 @@ export const formattedChangelogCommits = {
   ],
 };
 
-export const fullChangelog = `### feature
+export const fullChangelog = `### Feature
 - ${formattedChangelogCommits.feature[0].prMsg} ${formattedChangelogCommits.feature[0].chLink} ${formattedChangelogCommits.feature[0].prLink}
 
-### chore
-- ${formattedChangelogCommits.chore[0].prMsg} ${formattedChangelogCommits.chore[0].chLink} ${formattedChangelogCommits.chore[0].prLink}
-
-### bug
+### Bug
 - ${formattedChangelogCommits.bug[0].prMsg} ${formattedChangelogCommits.bug[0].chLink} ${formattedChangelogCommits.bug[0].prLink}
 
-### other
+### Chore
+- ${formattedChangelogCommits.chore[0].prMsg} ${formattedChangelogCommits.chore[0].chLink} ${formattedChangelogCommits.chore[0].prLink}
+
+### Other
 - ${formattedChangelogCommits.other[0].prMsg} ${formattedChangelogCommits.other[0].chLink} ${formattedChangelogCommits.other[0].prLink}
 
 `;

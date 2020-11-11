@@ -4,9 +4,6 @@ const list = require('markdown-list');
 
 export function formatChType(type) {
   const featureRegex = /(feat+)/;
-  const choreRegex = /(chore)/;
-  const bugRegex = /(bug)/;
-
   if (!type) {
     return 'other';
   }
@@ -15,15 +12,7 @@ export function formatChType(type) {
     return 'feature';
   }
 
-  if (type.match(choreRegex)) {
-    return 'chore';
-  }
-
-  if (type.match(bugRegex)) {
-    return 'bug';
-  }
-
-  return 'other';
+  return type.replace(/[^a-zA-Z ]/g, '');
 }
 
 export function formatCommits(commits, chStoryUrl) {
@@ -66,7 +55,7 @@ export function generateChangelog(formattedCommits) {
   core.info(formattedCommits);
 
   return Object.keys(formattedCommits).reduce((acc, type) => {
-    const heading = type;
+    const heading = `${type.charAt(0).toUpperCase()}${type.slice(1)}`;
     const markdownCommits = formattedCommits[type].map(
       (commit) =>
         `${commit.prMsg} ${commit.chLink && commit.chLink} ${

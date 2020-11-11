@@ -20,9 +20,6 @@ const list = __webpack_require__(7663);
 
 function formatChType(type) {
   const featureRegex = /(feat+)/;
-  const choreRegex = /(chore)/;
-  const bugRegex = /(bug)/;
-
   if (!type) {
     return 'other';
   }
@@ -31,15 +28,7 @@ function formatChType(type) {
     return 'feature';
   }
 
-  if (type.match(choreRegex)) {
-    return 'chore';
-  }
-
-  if (type.match(bugRegex)) {
-    return 'bug';
-  }
-
-  return 'other';
+  return type.replace(/[^a-zA-Z ]/g, '');
 }
 
 function formatCommits(commits, chStoryUrl) {
@@ -82,7 +71,7 @@ function generateChangelog(formattedCommits) {
   core.info(formattedCommits);
 
   return Object.keys(formattedCommits).reduce((acc, type) => {
-    const heading = type;
+    const heading = `${type.charAt(0).toUpperCase()}${type.slice(1)}`;
     const markdownCommits = formattedCommits[type].map(
       (commit) =>
         `${commit.prMsg} ${commit.chLink && commit.chLink} ${
