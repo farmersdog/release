@@ -51,7 +51,7 @@ with:
   chStoryUrl: 'https://app.clubhouse.io/org/story'
   tag: "v1.0.0"
   ## prerelease: false # default is true
-  previousTag: "v0.0.9"
+  previousTag: "v0.0.9" # is required if you're generating a changelog
 ```
 
 ### Release
