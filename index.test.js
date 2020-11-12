@@ -75,24 +75,51 @@ describe('Release', () => {
   });
 
   describe('run()', () => {
-    describe('on prerelease', () => {
+    test('should exit if no ghToken provided', async () => {
+      github.context.ref = 'refs/tags/v20.0.0';
+      inputs = {
+        createChangelog: 'true',
+        chStoryUrl,
+        prerelease: 'true',
+        previousTag: 'v20.0.0',
+      };
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith('Must provide ghToken');
+    });
+
+    test("should exit if tag isn't properly formatted", async () => {
+      github.context.ref = 'refs/tags/testing';
+      inputs = {
+        createChangelog: 'true',
+        chStoryUrl,
+        ghToken: '123',
+        prerelease: 'true',
+        previousTag: 'v20.0.0',
+      };
+
+      await run();
+
+      expect(core.setFailed).toHaveBeenCalledWith(
+        'Tag must follow format rules: v##.##.##'
+      );
+    });
+
+    describe('on createChangelog: true', () => {
       beforeEach(() => {
         // Reset inputs
         inputs = {};
       });
 
-      test('should exit if no ghToken provided', async () => {
-        github.context.ref = 'refs/tags/v20.0.0';
-        inputs = { chStoryUrl, prerelease: 'true', previousTag: 'v20.0.0' };
-
-        await run();
-
-        expect(core.setFailed).toHaveBeenCalledWith('Must provide ghToken');
-      });
-
       test('should exit if no chStoryUrl provided', async () => {
         github.context.ref = 'refs/tags/v20.0.0';
-        inputs = { ghToken: '123', prerelease: 'true', previousTag: 'v20.0.0' };
+        inputs = {
+          createChangelog: 'true',
+          ghToken: '123',
+          prerelease: 'true',
+          previousTag: 'v20.0.0',
+        };
 
         await run();
 
@@ -101,43 +128,45 @@ describe('Release', () => {
 
       test('should exit if no ghToken provided', async () => {
         github.context.ref = 'refs/tags/v20.0.0';
-        inputs = { chStoryUrl, prerelease: 'true', previousTag: 'v20.0.0' };
-
-        await run();
-
-        expect(core.setFailed).toHaveBeenCalledWith('Must provide ghToken');
-      });
-
-      test("should exit if tag isn't properly formatted", async () => {
-        github.context.ref = 'refs/tags/testing';
         inputs = {
+          createChangelog: 'true',
           chStoryUrl,
-          ghToken: '123',
           prerelease: 'true',
           previousTag: 'v20.0.0',
         };
 
         await run();
 
-        expect(core.setFailed).toHaveBeenCalledWith(
-          'Tag must follow format rules: v##.##.##'
-        );
+        expect(core.setFailed).toHaveBeenCalledWith('Must provide ghToken');
       });
 
       test('should exit if no previousTag provided', async () => {
         github.context.ref = 'refs/tags/v20.0.0';
-        inputs = { chStoryUrl, ghToken: '123', prerelease: 'true' };
+        inputs = {
+          createChangelog: 'true',
+          chStoryUrl,
+          ghToken: '123',
+          prerelease: 'true',
+        };
 
         await run();
 
         expect(core.setFailed).toHaveBeenCalledWith(
-          'Must provide a previousTag to create a prerelease'
+          'Must provide a previousTag to create a changelog'
         );
+      });
+    });
+
+    describe('on prerelease: true', () => {
+      beforeEach(() => {
+        // Reset inputs
+        inputs = {};
       });
 
       test('should call core.info', async () => {
         github.context.ref = 'refs/tags/v20.0.0';
         inputs = {
+          createChangelog: 'true',
           chStoryUrl,
           ghToken: '123',
           prerelease: 'true',
@@ -152,7 +181,7 @@ describe('Release', () => {
       });
     });
 
-    describe('on release', () => {
+    describe('on prelease: false', () => {
       beforeEach(() => {
         // Reset inputs
         inputs = {};
@@ -161,6 +190,7 @@ describe('Release', () => {
       test('should call core.info', async () => {
         github.context.ref = 'refs/tags/v20.0.0';
         inputs = {
+          createChangelog: 'false',
           chStoryUrl,
           ghToken: '123',
           prerelease: 'false',

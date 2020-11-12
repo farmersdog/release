@@ -80,6 +80,7 @@ export async function run() {
     const previousTag = core.getInput('previousTag');
     const prerelease = core.getInput('prerelease');
     const isPreRelease = prerelease === 'true';
+    const createChangelog = core.getInput('createChangelog') === 'true';
     const ghToken = core.getInput('ghToken');
     const chStoryUrl = core.getInput('chStoryUrl');
     const { ref } = github.context;
@@ -105,19 +106,21 @@ export async function run() {
       `Tag ${tag}: Creating a ${isPreRelease ? 'prerelease' : 'release'}...`
     );
 
-    /* CREATE PRERELEASE */
-    if (isPreRelease) {
-      // CH Story URL is required for prerelease
+    let changelog = null;
+
+    /* CREATE CHANGELOG */
+    if (createChangelog) {
+      // CH Story URL is required for changelog
       if (!chStoryUrl) {
         return core.setFailed('Must provide chStoryUrl');
       }
 
       core.setSecret('chStoryUrl');
 
-      // Previous Tag is required for prerelease
+      // Previous Tag is required for changelog
       if (!previousTag) {
         return core.setFailed(
-          'Must provide a previousTag to create a prerelease'
+          'Must provide a previousTag to create a changelog'
         );
       }
 
@@ -130,31 +133,19 @@ export async function run() {
       });
 
       const formattedCommits = formatCommits(commits);
-      const changelog = generateChangelog(formattedCommits);
+      changelog = generateChangelog(formattedCommits);
 
       core.info(changelog);
-
-      return await octokit.repos.createRelease({
-        ...github.context.repo,
-        name: tag,
-        tag_name: tag,
-        body: changelog,
-        prerelease: true,
-      });
     }
 
-    /* UPDATE PRERELEASE TO RELEASE */
-    if (!isPreRelease) {
-      return await octokit.repos.updateRelease({
-        ...github.context.repo,
-        release_id: github.context.payload.release.id,
-        prerelease: false,
-      });
-    }
-
-    return core.setFailed(
-      'The workflow did not run the necessary steps! Double check your env vars.'
-    );
+    /* CREATE RELEASE */
+    return await octokit.repos.createRelease({
+      ...github.context.repo,
+      name: tag,
+      tag_name: tag,
+      ...(createChangelog && { body: changelog }),
+      prerelease: isPreRelease,
+    });
   } catch (error) {
     return core.setFailed(error.message);
   }

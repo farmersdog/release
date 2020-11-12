@@ -10,9 +10,15 @@ prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat
 
 _Required_ Github token
 
+### `createChangelog`
+
+_Default_ true
+
+Would you like to generate a changelog for this release?
+
 ### `chStoryUrl`
 
-_Required_ Clubhouse story URL (ie. https://app.clubhouse.io/org/story)
+Clubhouse story URL (ie. https://app.clubhouse.io/org/story)
 
 ### `previousTag`
 
@@ -21,12 +27,6 @@ Github tag of latest release (if prerelease)
 ### `prerelease`
 
 **Default** true
-
-## Outputs
-
-### `releaseNotes`
-
-Release notes.
 
 ## Development
 
@@ -56,9 +56,6 @@ with:
 
 ### Release
 
-One might want to create a simple make command that triggers this workflow from the command line or a slack notification
-that allows this to be triggered.
-
 ```
 on: repository_dispatch
 ...
@@ -68,4 +65,5 @@ with:
   ghToken: ${{ secrets.GITHUB_TOKEN }}
   tag: ${{ github.event.release.tag_name }}
   prerelease: false
+  createChangelog: false
 ```

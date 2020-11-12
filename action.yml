@@ -6,6 +6,9 @@ inputs:
     required: true
   chStoryUrl:
     description: 'Clubhouse URL (ie. https://app.clubhouse.io/org/story)'
+  createChangelog:
+    description: 'Would you like to generate a changelog for this release?'
+    default: true
   tag:
     description: 'Github tag'
     required: true
