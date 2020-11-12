@@ -22,7 +22,7 @@ Clubhouse story URL (ie. https://app.clubhouse.io/org/story)
 
 ### `previousTag`
 
-Github tag of latest release (if prerelease)
+Github tag of latest release
 
 ### `prerelease`
 
