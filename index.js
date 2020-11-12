@@ -46,7 +46,7 @@ export function formatCommits(commits, chStoryUrl) {
     const formattedCommit = { chLink, prMsg, prLink, sha };
 
     return Object.assign(acc, {
-      [chType]: [...((acc[chType] && acc[chType]) || []), formattedCommit],
+      [chType]: [...(acc[chType] || []), formattedCommit],
     });
   }, {});
 }
