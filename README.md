@@ -6,15 +6,27 @@ prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat
 
 ## Inputs
 
-### `tag`
+### `ghToken`
 
-**Required** github tag
+_Required_ Github token
 
-## Outputs
+### `createChangelog`
 
-### `releaseNotes`
+_Default_ true
 
-Release notes.
+Would you like to generate a changelog for this release?
+
+### `chStoryUrl`
+
+Clubhouse story URL (ie. https://app.clubhouse.io/org/story)
+
+### `previousTag`
+
+Github tag of latest release (if prerelease)
+
+### `prerelease`
+
+**Default** true
 
 ## Development
 
@@ -24,14 +36,34 @@ Run `yarn lint:watch` to watch for ESLint errors/warnings.
 
 ## Example usage
 
-```
-on:
-  pull_request:
-    types: [opened]
-```
+### Prerelease
 
 ```
+on:
+  push:
+    tags:
+      - '*'
+...
+
 uses: actions/release@v1
 with:
+  ghToken: ${{ secrets.GITHUB_TOKEN }}
+  chStoryUrl: 'https://app.clubhouse.io/org/story'
   tag: "v1.0.0"
+  ## prerelease: false # default is true
+  previousTag: "v0.0.9" # is required if you're generating a changelog
+```
+
+### Release
+
+```
+on: repository_dispatch
+...
+
+uses: actions/release@v1
+with:
+  ghToken: ${{ secrets.GITHUB_TOKEN }}
+  tag: ${{ github.event.release.tag_name }}
+  prerelease: false
+  createChangelog: false
 ```

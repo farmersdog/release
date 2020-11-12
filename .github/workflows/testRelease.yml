@@ -1,0 +1,14 @@
+name: On Release
+on: repository_dispatch
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: action
+      - name: Test farmersdog/release action
+        uses: './action'
+        with:
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: 'false'

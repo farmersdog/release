@@ -1,9 +1,22 @@
 name: 'Release'
 description: 'Create a prerelease/release'
 inputs:
+  ghToken:
+    description: 'Github token'
+    required: true
+  chStoryUrl:
+    description: 'Clubhouse URL (ie. https://app.clubhouse.io/org/story)'
+  createChangelog:
+    description: 'Would you like to generate a changelog for this release?'
+    default: true
   tag:
     description: 'Github tag'
     required: true
+  previousTag:
+    description: 'The latest tag'
+  prerelease:
+    description: 'Is this a prerelease?'
+    default: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
