@@ -181,7 +181,7 @@ describe('Release', () => {
       });
     });
 
-    describe('on prelease: false', () => {
+    describe('on prerelease: false', () => {
       beforeEach(() => {
         // Reset inputs
         inputs = {};
