@@ -12,6 +12,8 @@ export function formatChType(type) {
     return 'feature';
   }
 
+  // Otherwise, return type passed in and
+  // Remove parentheses:
   return type.replace(/[^a-zA-Z ]/g, '');
 }
 
@@ -25,7 +27,6 @@ export function formatCommits(commits, chStoryUrl) {
   return commits.reduce((acc, com) => {
     const {
       commit: { message },
-      sha: origSha,
     } = com;
     const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(ch)?(?<chId>\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
     const matches = message.match(regex);
@@ -41,9 +42,7 @@ export function formatCommits(commits, chStoryUrl) {
         matches.groups.chId &&
         `[ch${matches.groups.chId}](${chStoryUrl}/${matches.groups.chId})`) ||
       null;
-    const sha = origSha.substring(0, 6);
-
-    const formattedCommit = { chLink, prMsg, prLink, sha };
+    const formattedCommit = { chLink, prMsg, prLink };
 
     return Object.assign(acc, {
       [chType]: [...(acc[chType] || []), formattedCommit],
