@@ -147,7 +147,7 @@ async function run() {
         head: tag,
       });
 
-      const formattedCommits = formatCommits(commits);
+      const formattedCommits = formatCommits(commits, chStoryUrl);
       changelog = generateChangelog(formattedCommits);
 
       core.info(changelog);
