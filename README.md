@@ -1,8 +1,11 @@
-# release
+# Clubhouse Release
 
 [![code style:
 prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 ![Test](https://github.com/farmersdog/clubhouse-pr/workflows/Test/badge.svg)
+
+This action creates a formatted release in github from formatted commit messages annotated with clubhouse story data. [Clubhouse PR](https://github.com/marketplace/actions/clubhouse-pr)
+can automatically format your PR titles (and commit messages, once merged) for use with this action.
 
 ## Inputs
 
@@ -20,13 +23,19 @@ Would you like to generate a changelog for this release?
 
 Clubhouse story URL (ie. https://app.clubhouse.io/org/story)
 
+### `tag`
+
+The git tag for the current release.
+
 ### `previousTag`
 
-Github tag of latest release
+The git tag of the most recent prior release.
 
 ### `prerelease`
 
-**Default** true
+Would you like the release be created in the "prereleased" state?
+
+**Default** false
 
 ## Development
 

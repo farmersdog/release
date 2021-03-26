@@ -13,10 +13,10 @@ inputs:
     description: 'The git tag for the current release'
     required: true
   previousTag:
-    description: 'The git tag of the previous release'
+    description: 'The git tag of the most recent prior release'
   prerelease:
-    description: 'Should the release be created in the "prereleased" state?'
-    default: true
+    description: 'Would you like the release be created in the "prereleased" state?'
+    default: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
