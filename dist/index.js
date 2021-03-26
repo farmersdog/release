@@ -99,7 +99,7 @@ async function run() {
     const ghToken = core.getInput('ghToken');
     const chStoryUrl = core.getInput('chStoryUrl');
     const { ref } = github.context;
-    const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>v\d{2}\.\d+\.\d+)/;
+    const tagRegex = /(?<refs>refs)\/(?<tags>tags)\/(?<tag>.*)/;
     const validTag = ref.match(tagRegex);
 
     if (!ghToken) {
@@ -109,7 +109,7 @@ async function run() {
     core.setSecret('ghToken');
 
     if (!validTag || !validTag.groups.tag) {
-      return core.setFailed('Tag must follow format rules: v##.##.##');
+      return core.setFailed('Ref must be a tag');
     }
 
     const {
