@@ -1,5 +1,5 @@
-name: 'Release'
-description: 'Create a prerelease/release'
+name: 'Clubhouse Release'
+description: 'Create a formatted release in github from formatted commit messages'
 inputs:
   ghToken:
     description: 'Github token'
@@ -10,12 +10,12 @@ inputs:
     description: 'Would you like to generate a changelog for this release?'
     default: true
   tag:
-    description: 'Github tag'
+    description: 'The git tag for the current release'
     required: true
   previousTag:
-    description: 'The latest tag'
+    description: 'The git tag of the previous release'
   prerelease:
-    description: 'Is this a prerelease?'
+    description: 'Should the release be created in the "prereleased" state?'
     default: true
 runs:
   using: 'node12'
