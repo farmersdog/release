@@ -90,7 +90,7 @@ describe('Release', () => {
     });
 
     test("should exit if tag isn't properly formatted", async () => {
-      github.context.ref = 'refs/tags/testing';
+      github.context.ref = 'refs/heads/v20.0.1';
       inputs = {
         createChangelog: 'true',
         chStoryUrl,
@@ -101,9 +101,7 @@ describe('Release', () => {
 
       await run();
 
-      expect(core.setFailed).toHaveBeenCalledWith(
-        'Tag must follow format rules: v##.##.##'
-      );
+      expect(core.setFailed).toHaveBeenCalledWith('Ref must be a tag');
     });
 
     describe('on createChangelog: true', () => {
