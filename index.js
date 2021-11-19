@@ -28,7 +28,7 @@ export function formatCommits(commits, chStoryUrl) {
     const {
       commit: { message },
     } = com;
-    const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(ch)?(?<chId>\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
+    const regex = /(?<chType>\(\w*\))?(\s)?(?<prMsg>\w*\W*.+?)(\s+)?(\[)?(sc-)?(?<chId>\d+)?(\])?\s\(#(?<prNumber>\d+)\)/;
     const matches = message.match(regex);
     const chType = formatChType(matches && matches.groups.chType);
     const prMsg = (matches && matches.groups.prMsg) || message;
@@ -40,7 +40,7 @@ export function formatCommits(commits, chStoryUrl) {
     const chLink =
       (matches &&
         matches.groups.chId &&
-        `[ch${matches.groups.chId}](${chStoryUrl}/${matches.groups.chId})`) ||
+        `[sc-${matches.groups.chId}](${chStoryUrl}/${matches.groups.chId})`) ||
       null;
     const formattedCommit = { chLink, prMsg, prLink };
 
@@ -142,7 +142,9 @@ export async function run() {
       ...github.context.repo,
       name: tag,
       tag_name: tag,
-      ...(createChangelog && { body: changelog }),
+      ...(createChangelog && {
+        body: `Service: ${github.context.repo}\n${changelog}`,
+      }),
       prerelease: isPreRelease,
     });
   } catch (error) {

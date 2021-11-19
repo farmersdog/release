@@ -1,18 +1,18 @@
 export const url = 'http://example.com/repo';
-export const chStoryUrl = 'https://app.clubhouse.io/org/story';
+export const chStoryUrl = 'https://app.shortcut.com/org/story';
 
 export const fullCommits = [
   {
-    commit: { message: '(feat) I am a feature [ch123] (#123)' },
+    commit: { message: '(feat) I am a feature [sc-123] (#123)' },
   },
   {
-    commit: { message: '(feature) I am a feature [ch000] (#000)' },
+    commit: { message: '(feature) I am a feature [sc-000] (#000)' },
   },
   {
-    commit: { message: '(bug) I am a bug fix [ch678] (#678)' },
+    commit: { message: '(bug) I am a bug fix [sc-678] (#678)' },
   },
   {
-    commit: { message: '(chore) I am a chore [ch345] (#345)' },
+    commit: { message: '(chore) I am a chore [sc-345] (#345)' },
   },
 ];
 
@@ -37,26 +37,26 @@ export const prMsgOnlyCommits = [
 export const formattedFullCommits = {
   feature: [
     {
-      chLink: `[ch123](${chStoryUrl}/123)`,
+      chLink: `[sc-123](${chStoryUrl}/123)`,
       prMsg: 'I am a feature',
       prLink: `[#123](${url}/pull/123)`,
     },
     {
-      chLink: `[ch000](${chStoryUrl}/000)`,
+      chLink: `[sc-000](${chStoryUrl}/000)`,
       prMsg: 'I am a feature',
       prLink: `[#000](${url}/pull/000)`,
     },
   ],
   bug: [
     {
-      chLink: `[ch678](${chStoryUrl}/678)`,
+      chLink: `[sc-678](${chStoryUrl}/678)`,
       prMsg: 'I am a bug fix',
       prLink: `[#678](${url}/pull/678)`,
     },
   ],
   chore: [
     {
-      chLink: `[ch345](${chStoryUrl}/345)`,
+      chLink: `[sc-345](${chStoryUrl}/345)`,
       prMsg: 'I am a chore',
       prLink: `[#345](${url}/pull/345)`,
     },
@@ -94,21 +94,21 @@ export const changelogCommits = [
 export const formattedChangelogCommits = {
   feature: [
     {
-      chLink: `[ch123](${chStoryUrl}/123)`,
+      chLink: `[sc-123](${chStoryUrl}/123)`,
       prMsg: 'I am a feature',
       prLink: `[#123](${url}/pull/123)`,
     },
   ],
   bug: [
     {
-      chLink: `[ch678](${chStoryUrl}/678)`,
+      chLink: `[sc-678](${chStoryUrl}/678)`,
       prMsg: 'I am a bug fix',
       prLink: `[#678](${url}/pull/678)`,
     },
   ],
   chore: [
     {
-      chLink: `[ch345](${chStoryUrl}/345)`,
+      chLink: `[sc-345](${chStoryUrl}/345)`,
       prMsg: 'I am a chore',
       prLink: `[#345](${url}/pull/345)`,
     },

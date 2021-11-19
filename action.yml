@@ -1,11 +1,11 @@
-name: 'Clubhouse Release'
+name: 'Shortcut Release'
 description: 'Create a formatted release in github from formatted commit messages'
 inputs:
   ghToken:
     description: 'Github token'
     required: true
   chStoryUrl:
-    description: 'Clubhouse URL (ie. https://app.clubhouse.io/org/story)'
+    description: 'Shortcut URL (ie. https://app.shortcut.com/org/story)'
   createChangelog:
     description: 'Would you like to generate a changelog for this release?'
     default: true
