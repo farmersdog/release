@@ -143,7 +143,7 @@ export async function run() {
       name: tag,
       tag_name: tag,
       ...(createChangelog && {
-        body: `Service: ${github.context.repo}\r ${changelog}`,
+        body: `Service: ${github.context.repo}\n${changelog}`,
       }),
       prerelease: isPreRelease,
     });
