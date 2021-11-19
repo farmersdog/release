@@ -4,7 +4,7 @@
 prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 ![Test](https://github.com/farmersdog/clubhouse-pr/workflows/Test/badge.svg)
 
-This action creates a formatted release in github from formatted commit messages annotated with clubhouse story data. [Clubhouse PR](https://github.com/marketplace/actions/clubhouse-pr)
+This action creates a formatted release in github from formatted commit messages annotated with Shortcut story data. [Shortcut PR](https://github.com/marketplace/actions/clubhouse-pr)
 can automatically format your PR titles (and commit messages, once merged) for use with this action.
 
 ## Inputs
@@ -21,7 +21,7 @@ Would you like to generate a changelog for this release?
 
 ### `chStoryUrl`
 
-Clubhouse story URL (ie. https://app.clubhouse.io/org/story)
+Shortcut story URL (ie. https://app.shortcut.com/org/story)
 
 ### `tag`
 
@@ -57,7 +57,7 @@ on:
 uses: actions/release@v1
 with:
   ghToken: ${{ secrets.GITHUB_TOKEN }}
-  chStoryUrl: 'https://app.clubhouse.io/org/story'
+  chStoryUrl: 'https://app.shortcut.com/org/story'
   tag: "v1.0.0"
   ## prerelease: false # default is true
   previousTag: "v0.0.9" # is required if you're generating a changelog
